@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Квиз | Банк России</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Roboto', Arial, sans-serif; background: #f0f4f8; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
+        .container { max-width: 800px; width: 100%; background: white; border-radius: 32px; box-shadow: 0 12px 28px rgba(0,0,0,0.08); overflow: hidden; }
+        .header { background: #003B6F; padding: 24px 28px; color: white; }
+        .header h1 { font-weight: 500; font-size: 1.8rem; }
+        .header p { opacity: 0.85; margin-top: 8px; }
+        .content { padding: 32px 28px; }
+        .settings-group { margin-bottom: 28px; }
+        .settings-label { font-weight: 600; color: #003B6F; margin-bottom: 12px; border-left: 4px solid #003B6F; padding-left: 12px; }
+        .radio-group, .select-group { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 8px; }
+        .radio-group label, .select-group select { background: #f8fafc; padding: 10px 18px; border-radius: 48px; font-weight: 500; border: 1px solid #cfdee9; cursor: pointer; }
+        .btn { background: #003B6F; color: white; border: none; padding: 14px 28px; font-size: 1rem; font-weight: 600; border-radius: 48px; cursor: pointer; width: 100%; margin-top: 20px; }
+        .btn-secondary { background: #eef2f7; color: #003B6F; border: 1px solid #cbdde9; }
+        .error-message { background: #ffe6e5; color: #b00020; padding: 12px; border-radius: 20px; margin-top: 18px; text-align: center; display: none; }
+        .quiz-header { display: flex; justify-content: space-between; margin-bottom: 28px; border-bottom: 1px solid #e2edf2; padding-bottom: 12px; }
+        .question-counter { background: #eef3fc; padding: 6px 14px; border-radius: 40px; color: #003B6F; }
+        .timer { font-size: 2rem; font-weight: 700; font-family: monospace; background: #f0f4fa; padding: 6px 18px; border-radius: 60px; }
+        .timer.warning { color: #dc2626; background: #ffe8e8; }
+        .question-text { font-size: 1.4rem; font-weight: 500; margin: 20px 0 24px; }
+        .option-item { margin-bottom: 14px; background: #f9fbfd; padding: 12px 18px; border-radius: 24px; border: 1px solid #e2edf2; }
+        input[type="text"] { width: 100%; padding: 14px 18px; border-radius: 48px; border: 1px solid #cfdee9; }
+        .feedback { margin: 18px 0 20px; padding: 14px 18px; border-radius: 20px; }
+        .feedback.correct { background: #e0f7e8; color: #0b5e2e; border-left: 6px solid #2b8c4a; }
+        .feedback.wrong { background: #ffeceb; color: #b91c1c; border-left: 6px solid #dc2626; }
+        .result-stats { background: #f2f6fc; padding: 20px; border-radius: 32px; text-align: center; margin: 20px 0; }
+        .stat-number { font-size: 2.5rem; font-weight: 700; color: #003B6F; }
+        @media (max-width: 550px) { .question-text { font-size: 1.2rem; } .timer { font-size: 1.5rem; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>🏦 Банк России</h1>
+        <p>Операционные процедуры и макропруденциальная политика</p>
+    </div>
+    <div class="content">
+        <div id="startScreen">
+            <div class="settings-group"><div class="settings-label">Тема</div>
+                <div class="radio-group">
+                    <label><input type="radio" name="theme" value="Операционные процедуры Банка России"> Операционные процедуры</label>
+                    <label><input type="radio" name="theme" value="Макропруденциальная политика Банка России" checked> Макропруденциальная политика</label>
+                    <label><input type="radio" name="theme" value="mix"> Микс тем</label>
+                </div>
+            </div>
+            <div class="settings-group"><div class="settings-label">Уровень сложности</div>
+                <div class="radio-group">
+                    <label><input type="radio" name="difficulty" value="базовый" checked> Базовый</label>
+                    <label><input type="radio" name="difficulty" value="продвинутый"> Продвинутый</label>
+                    <label><input type="radio" name="difficulty" value="сложный"> Сложный</label>
+                </div>
+            </div>
+            <div class="settings-group"><div class="settings-label">Количество вопросов</div>
+                <select id="questionCountSelect">
+                    <option value="5">5 вопросов</option>
+                    <option value="10" selected>10 вопросов</option>
+                    <option value="15">15 вопросов</option>
+                </select>
+            </div>
+            <button class="btn" id="startQuizBtn">▶ Начать квиз</button>
+            <div id="startErrorMsg" class="error-message"></div>
+        </div>
+        <div id="quizScreen" style="display: none;">
+            <div class="quiz-header">
+                <span class="question-counter" id="questionCounter">Вопрос 1 / 10</span>
+                <span class="timer" id="timerDisplay">01:00</span>
+            </div>
+            <div class="question-text" id="questionText"></div>
+            <div id="optionsContainer" class="options-area"></div>
+            <div id="feedbackBlock" class="feedback" style="display: none;"></div>
+            <div class="action-buttons">
+                <button class="btn" id="submitAnswerBtn">✅ Ответить</button>
+                <button class="btn btn-secondary" id="nextQuestionBtn" style="display: none;">➡ Перейти к следующему</button>
+            </div>
+        </div>
+        <div id="resultsScreen" style="display: none;">
+            <h3>📊 Результаты квиза</h3>
+            <div class="result-stats">
+                <div><span class="stat-number" id="correctCount">0</span> / <span id="totalQuestionsStat">0</span></div>
+                <div>Процент верных: <strong id="percentageStat">0%</strong></div>
+                <div>⏱ Общее время: <strong id="totalTimeSec">0</strong> секунд</div>
+            </div>
+            <button class="btn" id="restartQuizBtn">🔄 Пройти ещё раз</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ===================== БАНК ВОПРОСОВ (35 штук) =====================
+    const questionsBank = [
+  {
+    "id": 1,
+    "topic": "Макропруденциальная политика Банка России",
+    "difficulty": "базовый",
+    "type": "single",
+    "questionText": "Что такое макропруденциальная политика Банка России?",
+    "options": [
+      "Политика по обеспечению ценовой стабильности",
+      "Политика по обеспечению стабильности финансовой системы",
+      "Регулирование макроэкономической деятельности кредитных и микрофинансовых организаций на региональном уровне",
+      "Политика, направленная на предотвращение банкротства отдельных крупных банков путём санации и предоставления экстренной ликвидности."
+    ],
+    "correctAnswers": 2,
+    "explanation": "Макропруденциальная политика - политика по обеспечению стабильности финансовой системы. Она минимизирует вероятность финансовых кризисов, предотвращает формирование пузырей и смягчает последствия шоков для экономики."
+  },
+  {
+    "id": 2,
+    "topic": "Макропруденциальная политика Банка России",
+    "difficulty": "базовый",
+    "type": "multiple",
+    "questionText": "Назовите два основных инструмента макропруденциальной политики Банка России, используемых в розничном кредитовании.",
+    "options": [
+      "Макропруденциальные лимиты",
+      "Макропруденциальные надбавки к коэффициентам риска",
+      "Антициклическая надбавка",
+      "Норма обязательных резервов"
+    ],
+    "correctAnswers": [1, 2],
+    "explanation": ""
+  },
+  {
+    "id": 3,
+    "topic": "Макропруденциальная политика Банка России",
+    "difficulty": "базовый",
+    "type": "single",
+    "questionText": "Как рассчитывается показатель долговой нагрузки заемщика?",
+    "options": [
+      "Отношение общей суммы кредита к стоимости залога",
+      "Отношение стоимости залога к общей сумме кредита",
+      "Отношение суммы просроченной задолженности к объему кредитного портфеля",
+      "Отношение среднемесячных платежей по всем кредитам и займам к среднемесячному доходу заемщика (в процентах)"
+    ],
+    "correctAnswers": 4,
+    "explanation": ""
+  },
+  {
+    "id": 4,
+    "topic": "Макропруденциальная политика Банка России",
+    "difficulty": "базовый",
+    "type": "single",
+    "questionText": "Для чего Банк России устанавливает макропруденциальные лимиты?",
+    "options": [
+      "Для снижения инфляции через ограничение денежного предложения",
+      "Для ограничения закредитованности граждан и формирования более сбалансированной структуры розничного кредитования",
+      "Чтобы установить максимальную сумму, которую банк может потерять при банкротстве одного крупного заёмщика",
+      "Для ограничения общего объёма кредитов, который банки могут выдать без обеспечения в течение одного квартала"
+    ],
+    "correctAnswers": 2,
+    "explanation": ""
+  },
+  {
+    "id": 5,
+    "topic": "Макропруденциальная политика Банка России",
+    "difficulty": "базовый",
+    "type": "multiple",
+    "questionText": "На какие сегменты кредитования Банк России может устанавливать макропруденциальные лимиты? Выберите три варианта ответа.",
+    "options": [
+      "Необеспеченные потребительские кредиты",
+      "Корпоративные кредиты",
+      "Автокредиты",
+      "Ипотека"
+    ],
+    "correctAnswers": [1, 3, 4],
+    "explanation": ""
+  },
+  {
+    "id": 6,
+    "topic": "Макропруденциальная политика Банка России",
+    "difficulty": "базовый",
+    "type": "single",
+    "questionText": "С какой целью применяется антициклическая надбавка к капиталу банков?",
+    "options": [
+      "Для ограничения валютных рисков банков",
+      "Для компенсации потерь кредитных организаций при обесценении залога",
+      "Чтобы защитить крупнейшие системно значимые банки от внезапного оттока вкладов населения",
+      "Создание дополнительного буфера капитала, который банки могут использовать в кризисные периоды"
+    ],
+    "correctAnswers": 4,
+    "explanation": "Антициклическая надбавка применяется для создания дополнительного буфера капитала, который банки могут использовать в период кризиса (накопление в \"хорошие\" времена и роспуск в \"плохие\")."
+  },
+  {
+    "id": 7,
+    "topic": "Макропруденциальная политика Банка России",
+    "difficulty": "базовый",
+    "type": "single",
+    "questionText": "С какой периодичностью Банк России пересматривает решения по макропруденциальной политике?",
+    "options": [
+      "Ежемесячно",
+      "Ежеквартально",
+      "Раз в полгода",
+      "Ежегодно"
+    ],
+    "correctAnswers": 2,
+    "explanation": ""
+  },
+  {
+    "id": 8,
+    "topic": "Макропруденциальная политика Банка России",
+    "difficulty": "базовый",
+    "type": "single",
+    "questionText": "Каким организациям, помимо банков, Банк России может устанавливать макропруденциальные лимиты?",
+    "options": [
+      "Страховым компаниям",
+      "Пенсионным фондам",
+      "Микрофинансовым организациям",
+      "Кредитным кооперативам"
+    ],
+    "correctAnswers": 3,
+    "explanation": ""
+  },
+  {
+    "id": 9,
+    "topic": "Макропруденциальная политика Банка России",
+    "difficulty": "базовый",
+    "type": "single",
+    "questionText": "Что такое \"макропруденциальный буфер капитала\"?",
+    "options": [
+      "Запас собственных средств (капитала), который банки формируют под рискованные кредиты благодаря действию макропруденциальных надбавок",
+      "Часть уставного капитала кредитной организации, зарезервированная на случай отзыва лицензии",
+      "Специальный счет кредитной или микрофинансовой организации, открытый в Банке России для покрытия операционных убытков",
+      "Это резервный фонд, который формируется за счет средств Банка России для экстренной докапитализации любого банка в случае его банкротства"
+    ],
+    "correctAnswers": 1,
+    "explanation": "Макропруденциальные надбавки применяются в первую очередь для накопления банками буфера капитала при выдаче рискованных кредитов. Цель накопления буфера капитала -- покрыть потери и не допустить кредитного сжатия в кризис из-за дефицита капитала банков. Буфер может быть использован при роспуске надбавок Банком России в кризисный период."
+  },
+  {
+    "id": 10,
+    "topic": "Макропруденциальная политика Банка России",
+    "difficulty": "базовый",
+    "type": "single",
+    "questionText": "К какому типу кредитов применяются макропруденциальные лимиты?",
+    "options": [
+      "К розничным кредитам (кредиты физическим лицам)",
+      "К субординированным кредитам",
+      "К любым корпоративным кредитам",
+      "К корпоративным кредитам для малых и средних предприятий"
+    ],
+    "correctAnswers": 1,
+    "explanation": ""
+  },
+  {
+    "id": 11,
+    "topic": "Макропруденциальная политика Банка России",
+    "difficulty": "базовый",
+    "type": "single",
+    "questionText": "В каком документе Банк России систематизировал свои подходы к проведению макропруденциальной политики?",
+    "options": [
+      "Основные направления единой государственной денежно-кредитной политики",
+      "Обзор финансовой стабильности",
+      "Основные подходы к проведению макропруденциальной политики",
+      "Политика финансового оздоровления кредитных и микрофинансовых организаций"
+    ],
+    "correctAnswers": 3,
+    "explanation": ""
+  },
+  {
+    "id": 12,
+    "topic": "Макропруденциальная политика Банка России",
+    "difficulty": "базовый",
+    "type": "single",
+    "questionText": "Являются ли макропруденциальные лимиты постоянной мерой?",
+    "options": [
+      "Да, они устанавливаются один раз и не меняются",
+      "Нет, они могут пересматриваться ежеквартально в зависимости от ситуации",
+      "Нет, они вводятся только на время кризиса",
+      "Нет, они пересматриваются ежегодно по итогам года"
+    ],
+    "correctAnswers": 2,
+    "explanation": ""
+  },
+  {
+    "id": 13,
+    "topic": "Макропруденциальная политика Банка России",
+    "difficulty": "базовый",
+    "type": "multiple",
+    "questionText": "Какие показатели, помимо показателя долговой нагрузки (ПДН), являются ключевыми для оценки риска в ипотеке?",
+    "options": [
+      "Отношение величины кредита к стоимости залога (LTV)",
+      "Кредитный рейтинг застройщика",
+      "Кредитный рейтинг заёмщика и его трудоустройство",
+      "Размер первоначального взноса, по договорам долевого участия"
+    ],
+    "correctAnswers": [1, 4],
+    "explanation": "Для оценки риска в ипотеке дополнительно используется отношение величины кредита к стоимости залога (LTV) или в случае кредитов по договорам долевого участия, где предмет залога еще находится в стадии строительства вместо LTV используется размер первоначального взноса"
+  },
+  {
+    "id": 14,
+    "topic": "Макропруденциальная политика Банка России",
+    "difficulty": "базовый",
+    "type": "multiple",
+    "questionText": "Выберите 2 основные цели макропруденциальной политики Банка России.",
+    "options": [
+      "Защита и обеспечение устойчивости рубля посредством поддержания ценовой стабильности",
+      "Содействие развитию конкурентоспособного финансового рынка",
+      "Ограничение масштаба уязвимостей в финансовой системе",
+      "Накопление запаса капитала и ликвидности у участников финансового рынка",
+      "Регулирование макроэкономической деятельности участников финансовой системы"
+    ],
+    "correctAnswers": [3, 4],
+    "explanation": "Можно выделить 2 связанные цели макропруденциальной политики: Цель 1 -- ограничить масштаб уязвимостей в финансовой системе и, как следствие, величину потерь участников финансового рынка в случае шока. Цель 2 -- накопить запас капитала и ликвидности у участников финансового рынка, который поддержит их в случае шока, позволит им покрыть потери и продолжать выполнять свои функции."
+  },
+  {
+    "id": 15,
+    "topic": "Макропруденциальная политика Банка России",
+    "difficulty": "базовый",
+    "type": "single",
+    "questionText": "Какой из макропруденциальных инструментов используется ТОЛЬКО для банков?",
+    "options": [
+      "Норматив краткосрочной ликвидности",
+      "Антициклические надбавки",
+      "Макропруденциальные лимиты",
+      "Макропруденциальные надбавки"
+    ],
+    "correctAnswers": 2,
+    "explanation": "В распоряжении Банка России есть три макропруденциальных инструмента: антициклические надбавки, надбавки к коэффициентам риска, учитываемые при расчете нормативов достаточности капитала (макропруденциальные надбавки) и макропруденциальные лимиты. Первый инструмент используется только для банков, а макропруденциальные надбавки и макропруденциальные лимиты -- для банков и МФО."
+  },
+  {
+    "id": 16,
+    "topic": "Макропруденциальная политика Банка России",
+    "difficulty": "базовый",
+    "type": "single",
+    "questionText": "Какой макропруденциальный инструмент Банк России начал применять первым?",
+    "options": [
+      "Норматив краткосрочной ликвидности",
+      "Антициклическая надбавка",
+      "Макропруденциальные лимиты",
+      "Макропруденциальные надбавки"
+    ],
+    "correctAnswers": 4,
+    "explanation": "Макропруденциальные надбавки -- первый макропруденциальный инструмент, появившийся в арсенале Банка России."
+  },
+  {
+    "id": 17,
+    "topic": "Макропруденциальная политика Банка России",
+    "difficulty": "базовый",
+    "type": "single",
+    "questionText": "Применяются ли макропруденциальные надбавки к кредитам, выданным до их введения?",
+    "options": [
+      "Да, применяются ко всем кредитам",
+      "Нет, только к вновь выдаваемым кредитам",
+      "Да, выборочно, по решению Банка России",
+      "Да, выборочно по решению кредитной организации"
+    ],
+    "correctAnswers": 2,
+    "explanation": "Надбавки применяются к вновь выдаваемым кредитам и не применяются к кредитам, которые были выданы до введения МПН. Так как банки учитывают в ставке по кредиту требования к капиталу, то применение надбавок к ранее выданным кредитам приводило бы к непрогнозируемому для банков снижению рентабельности кредитных портфелей."
+  },
+  {
+    "id": 18,
+    "topic": "Макропруденциальная политика Банка России",
+    "difficulty": "базовый",
+    "type": "single",
+    "questionText": "На основе чего определяется целевой уровень антициклической надбавки к капиталу банков?",
+    "options": [
+      "На основе прогноза инфляции",
+      "На основе среднего значения ключевой ставки за последние 5 лет",
+      "На основе рекомендация Минфина",
+      "На основе результатов макропруденциального стресс-тестирования"
+    ],
+    "correctAnswers": 4,
+    "explanation": ""
+  },
+  {
+    "id": 19,
+    "topic": "Макропруденциальная политика Банка России",
+    "difficulty": "базовый",
+    "type": "open",
+    "questionText": "Как называется устойчивость финансовой системы к шокам и бесперебойное и эффективное ее функционирование? Назовите термин двумя словами",
+    "options": [],
+    "correctAnswers": "финансовая стабильность",
+    "explanation": ""
+  },
+  {
+    "id": 20,
+    "topic": "Макропруденциальная политика Банка России",
+    "difficulty": "базовый",
+    "type": "single",
+    "questionText": "С какой периодичностью Банк России проводит макропруденциальное стресс-тестирование?",
+    "options": [
+      "Ежеквартально",
+      "По мере необходимости, но не реже 1 раза в полугодие",
+      "Раз в год",
+      "По мере необходимости, но не реже 1 раза в 2 года"
+    ],
+    "correctAnswers": 3,
+    "explanation": "Банк России проводит макропруденциальное стресс-тестирование в формате «сверху вниз» на ежегодной основе."
+  },
+  {
+    "id": 21,
+    "topic": "Макропруденциальная политика Банка России",
+    "difficulty": "базовый",
+    "type": "single",
+    "questionText": "Когда решение Совета директоров Банка России о снижении макропруденциальных требований вступает в силу?",
+    "options": [
+      "С начала следующего календарного квартала",
+      "Через месяц после принятия решения",
+      "Совет директоров назначает дату вступления решения в силу",
+      "С момента принятия решения"
+    ],
+    "correctAnswers": 4,
+    "explanation": "Решение об установлении надбавок и значений характеристик кредитов принимает Совет директоров Банка России. В случае повышения требований к капиталу решение может вступить в силу не ранее чем через месяц, что дает банкам время на подготовку, в случае снижения -- с момента принятия решения."
+  },
+  {
+    "id": 22,
+    "topic": "Макропруденциальная политика Банка России",
+    "difficulty": "базовый",
+    "type": "single",
+    "questionText": "В каком материале описывается как Банк России выявляет системные риски, принимает решения на разных стадиях финансового цикла и учитывает взаимосвязь различных инструментов. Также в этом материале показано, почему макропруденциальная политика не может служить инструментом обеспечения ценовой стабильности.",
+    "options": [
+      "Основные направления единой государственной денежно-кредитной политики",
+      "Обзор финансовой стабильности",
+      "Основные направления единой государственной макропруденциальной политики",
+      "Основные подходы к проведению макропруденциальной политики"
+    ],
+    "correctAnswers": 4,
+    "explanation": ""
+  },
+  {
+    "id": 23,
+    "topic": "Макропруденциальная политика Банка России",
+    "difficulty": "базовый",
+    "type": "open",
+    "questionText": "Какое понятие описывает заметную волатильность на финансовых рынках или в финансовых потоках безотносительно системного эффекта? Назовите термин 2 словами",
+    "options": [],
+    "correctAnswers": "финансовая нестабильность",
+    "explanation": "отметим, что понятие финансовой нестабильности является более широким, обычно так описывают просто заметную волатильность на финансовых рынках или в финансовых потоках безотносительно системного эффекта."
+  },
+  {
+    "id": 24,
+    "topic": "Макропруденциальная политика Банка России",
+    "difficulty": "базовый",
+    "type": "single",
+    "questionText": "С какой периодичностью начиная с 2026 года Банк России публикует график заседаний Совета директоров по макропруденциальной политике?",
+    "options": [
+      "Ежемесячно",
+      "Ежеквартально",
+      "Раз в полгода",
+      "Ежегодно"
+    ],
+    "correctAnswers": 4,
+    "explanation": "Банк России публикует график заседаний Совета директоров по макропруденциальной политике ежегодно (график на год)."
+  },
+  {
+    "id": 25,
+    "topic": "Макропруденциальная политика Банка России",
+    "difficulty": "базовый",
+    "type": "single",
+    "questionText": "Для каких банков устанавливаются значения макропруденциальных лимитов, указанные в пресс-релизах Банка России?",
+    "options": [
+      "Для банков с базовой лицензией",
+      "Для банков с универсальной лицензией",
+      "Только для системно значимых банков",
+      "Для всех банков и филиалов иностранных банков, работающих на территории России"
+    ],
+    "correctAnswers": 2,
+    "explanation": ""
+  }
+];
+    // ========== ВСТАВЬТЕ СЮДА ВАШ ПОЛНЫЙ МАССИВ ИЗ 35 ВОПРОСОВ ==========
+    // (скопируйте его из предыдущего сообщения, где он был полностью приведён)
+
+    // ---------------------- ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ -------------------------
+    let currentQuizQuestions = [];
+    let userAnswersRecord = [];
+    let quizStartTimestamp = null;
+    let currentQuestionIndex = 0;
+    let timerInterval = null;
+    let timeLeft = 60;
+    let answerLock = false;
+    let currentQuestionObj = null;
+    let autoTransitionTimeout = null;
+
+    // ⭐ ЗДЕСЬ ВСТАВЬТЕ ВАШ НОВЫЙ URL ⭐
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzCKVTSPWqSLQ4EuCUHCl3uFEwZKUL_6SNC3fPW4Nv90Z5bv0-4tta5pzTixoz6cosZ/exec";
+
+    // DOM элементы
+    const startScreen = document.getElementById('startScreen');
+    const quizScreen = document.getElementById('quizScreen');
+    const resultsScreen = document.getElementById('resultsScreen');
+    const startErrorMsg = document.getElementById('startErrorMsg');
+    const startBtn = document.getElementById('startQuizBtn');
+    const submitBtn = document.getElementById('submitAnswerBtn');
+    const nextBtn = document.getElementById('nextQuestionBtn');
+    const questionCounterSpan = document.getElementById('questionCounter');
+    const timerDisplay = document.getElementById('timerDisplay');
+    const questionTextDiv = document.getElementById('questionText');
+    const optionsContainer = document.getElementById('optionsContainer');
+    const feedbackBlock = document.getElementById('feedbackBlock');
+    const restartBtn = document.getElementById('restartQuizBtn');
+    const correctCountSpan = document.getElementById('correctCount');
+    const totalQuestionsStatSpan = document.getElementById('totalQuestionsStat');
+    const percentageStatSpan = document.getElementById('percentageStat');
+    const totalTimeSecSpan = document.getElementById('totalTimeSec');
+
+    // Отправка в Google Sheets
+    function sendToGoogleSheets(data) {
+        if (!GOOGLE_SCRIPT_URL) return;
+        fetch(GOOGLE_SCRIPT_URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        }).catch(e => console.warn("Ошибка отправки:", e));
+    }
+
+    function formatFeedbackMsg(isCorrect, explanation) {
+        let msg = isCorrect ? "✅ Верно!" : "❌ Неверно.";
+        if (explanation && explanation.trim()) msg += "<br>📘 Примечание: " + explanation;
+        return msg;
+    }
+
+    function stopTimer() { if (timerInterval) clearInterval(timerInterval); timerInterval = null; }
+    function clearAuto() { if (autoTransitionTimeout) clearTimeout(autoTransitionTimeout); autoTransitionTimeout = null; }
+
+    function startTimerForQuestion() {
+        stopTimer();
+        timeLeft = 60;
+        updateTimerUI();
+        timerInterval = setInterval(() => {
+            if (answerLock) return;
+            if (timeLeft <= 1) { timeLeft = 0; updateTimerUI(); stopTimer(); if (!answerLock) handleTimeout(); }
+            else { timeLeft--; updateTimerUI(); }
+        }, 1000);
+    }
+
+    function updateTimerUI() {
+        const m = Math.floor(timeLeft/60), s = timeLeft%60;
+        timerDisplay.textContent = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        if (timeLeft <= 10) timerDisplay.classList.add('warning');
+        else timerDisplay.classList.remove('warning');
+    }
+
+    function handleTimeout() {
+        if (answerLock) return;
+        answerLock = true;
+        stopTimer();
+        const q = currentQuestionObj;
+        let correctTxt = "";
+        if (q.type === 'single') correctTxt = q.options[q.correctAnswers];
+        else if (q.type === 'multiple') correctTxt = q.correctAnswers.map(i => q.options[i]).join(", ");
+        else correctTxt = q.correctAnswers;
+        let html = `<span>⏰ Время вышло! Правильный ответ: ${correctTxt}.`;
+        if (q.explanation) html += `<br>📘 Примечание: ${q.explanation}`;
+        html += `</span>`;
+        feedbackBlock.innerHTML = html;
+        feedbackBlock.className = "feedback wrong";
+        feedbackBlock.style.display = "block";
+        userAnswersRecord.push({ questionId: q.id, questionText: q.questionText, userAnswer: "timeout", isCorrect: false, correctAnswer: correctTxt, explanation: q.explanation || "" });
+        submitBtn.style.display = "none";
+        nextBtn.style.display = "flex";
+        clearAuto();
+        autoTransitionTimeout = setTimeout(() => goToNext(), 10000);
+    }
+
+    function recordAnswer(isCorrect, userRaw, correctDisplay) {
+        const q = currentQuestionObj;
+        userAnswersRecord.push({ questionId: q.id, questionText: q.questionText, userAnswer: userRaw, isCorrect: isCorrect, correctAnswer: correctDisplay, explanation: q.explanation || "" });
+        feedbackBlock.innerHTML = formatFeedbackMsg(isCorrect, q.explanation);
+        feedbackBlock.className = isCorrect ? "feedback correct" : "feedback wrong";
+        feedbackBlock.style.display = "block";
+        submitBtn.style.display = "none";
+        nextBtn.style.display = "flex";
+        nextBtn.textContent = (currentQuestionIndex + 1 === currentQuizQuestions.length) ? "🏁 Завершить квиз" : "➡ Перейти к следующему";
+    }
+
+    function checkAnswer() {
+        if (answerLock) return;
+        const q = currentQuestionObj;
+        let isCorrect = false, userRaw = "", correctDisplay = "";
+        if (q.type === "single") {
+            const selected = document.querySelector('input[name="singleOption"]:checked');
+            if (!selected) { alert("Выберите вариант"); return; }
+            const idx = parseInt(selected.value);
+            userRaw = q.options[idx];
+            correctDisplay = q.options[q.correctAnswers];
+            isCorrect = (idx === q.correctAnswers);
+        } else if (q.type === "multiple") {
+            const boxes = document.querySelectorAll('input[name="multiOption"]:checked');
+            const selected = Array.from(boxes).map(cb => parseInt(cb.value)).sort();
+            const correctSorted = [...q.correctAnswers].sort();
+            isCorrect = selected.length === correctSorted.length && selected.every((v,i) => v === correctSorted[i]);
+            userRaw = selected.map(i => q.options[i]).join("; ");
+            correctDisplay = q.correctAnswers.map(i => q.options[i]).join("; ");
+        } else if (q.type === "open") {
+            const input = document.getElementById('openInput');
+            if (!input) return;
+            let userVal = input.value.trim().toLowerCase();
+            let correctVal = q.correctAnswers.trim().toLowerCase();
+            isCorrect = (userVal === correctVal);
+            userRaw = input.value;
+            correctDisplay = q.correctAnswers;
+        }
+        answerLock = true;
+        stopTimer();
+        clearAuto();
+        recordAnswer(isCorrect, userRaw, correctDisplay);
+    }
+
+    function goToNext() {
+        clearAuto();
+        if (currentQuestionIndex + 1 < currentQuizQuestions.length) { currentQuestionIndex++; renderCurrentQuestion(); }
+        else { finishQuiz(); }
+    }
+
+    function finishQuiz() {
+        stopTimer(); clearAuto();
+        const totalSeconds = Math.floor((Date.now() - quizStartTimestamp) / 1000);
+        const totalQ = currentQuizQuestions.length;
+        const correctTotal = userAnswersRecord.filter(a => a.isCorrect).length;
+        const percent = Math.round((correctTotal / totalQ) * 100);
+        correctCountSpan.innerText = correctTotal;
+        totalQuestionsStatSpan.innerText = totalQ;
+        percentageStatSpan.innerText = `${percent}%`;
+        totalTimeSecSpan.innerText = totalSeconds;
+        const now = new Date();
+        const formattedDate = now.toLocaleString("ru-RU", { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        const finalData = {
+            date: formattedDate,
+            settings: { theme: document.querySelector('input[name="theme"]:checked').value, difficulty: document.querySelector('input[name="difficulty"]:checked').value, questionsCount: totalQ },
+            totalCorrect: correctTotal,
+            totalQuestions: totalQ,
+            percent: percent,
+            totalTimeSec: totalSeconds,
+            answers: userAnswersRecord
+        };
+        sendToGoogleSheets(finalData);
+        quizScreen.style.display = "none";
+        resultsScreen.style.display = "block";
+    }
+
+    function renderCurrentQuestion() {
+        answerLock = false;
+        submitBtn.style.display = "flex";
+        nextBtn.style.display = "none";
+        feedbackBlock.style.display = "none";
+        feedbackBlock.innerHTML = "";
+        stopTimer(); clearAuto();
+        currentQuestionObj = currentQuizQuestions[currentQuestionIndex];
+        questionTextDiv.innerText = currentQuestionObj.questionText;
+        questionCounterSpan.innerText = `Вопрос ${currentQuestionIndex+1} / ${currentQuizQuestions.length}`;
+        optionsContainer.innerHTML = "";
+        if (currentQuestionObj.type === "single") {
+            currentQuestionObj.options.forEach((opt, idx) => {
+                const div = document.createElement("div");
+                div.className = "option-item";
+                div.innerHTML = `<input type="radio" name="singleOption" value="${idx}" id="opt_${idx}"> <label for="opt_${idx}">${opt}</label>`;
+                optionsContainer.appendChild(div);
+            });
+        } else if (currentQuestionObj.type === "multiple") {
+            currentQuestionObj.options.forEach((opt, idx) => {
+                const div = document.createElement("div");
+                div.className = "option-item";
+                div.innerHTML = `<input type="checkbox" name="multiOption" value="${idx}" id="ch_${idx}"> <label for="ch_${idx}">${opt}</label>`;
+                optionsContainer.appendChild(div);
+            });
+        } else if (currentQuestionObj.type === "open") {
+            const input = document.createElement("input");
+            input.type = "text";
+            input.id = "openInput";
+            input.placeholder = "Введите ответ...";
+            optionsContainer.appendChild(input);
+        }
+        startTimerForQuestion();
+    }
+
+    function buildQuiz(theme, difficulty, count) {
+        let filtered = questionsBank.filter(q => (theme === "mix" ? true : q.topic === theme) && q.difficulty === difficulty);
+        if (filtered.length < count) return { success: false, msg: `Не хватает вопросов: доступно ${filtered.length}.` };
+        for (let i = filtered.length - 1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [filtered[i], filtered[j]] = [filtered[j], filtered[i]]; }
+        let selected = filtered.slice(0, count);
+        for (let i = selected.length - 1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [selected[i], selected[j]] = [selected[j], selected[i]]; }
+        return { success: true, questions: selected };
+    }
+
+    function startQuiz() {
+        const theme = document.querySelector('input[name="theme"]:checked').value;
+        const difficulty = document.querySelector('input[name="difficulty"]:checked').value;
+        const count = parseInt(document.getElementById('questionCountSelect').value);
+        const build = buildQuiz(theme, difficulty, count);
+        if (!build.success) { startErrorMsg.innerText = build.msg; startErrorMsg.style.display = "block"; return; }
+        startErrorMsg.style.display = "none";
+        currentQuizQuestions = build.questions;
+        userAnswersRecord = [];
+        currentQuestionIndex = 0;
+        answerLock = false;
+        quizStartTimestamp = Date.now();
+        startScreen.style.display = "none";
+        quizScreen.style.display = "block";
+        resultsScreen.style.display = "none";
+        renderCurrentQuestion();
+    }
+
+    function restart() { stopTimer(); clearAuto(); answerLock = false; startScreen.style.display = "block"; quizScreen.style.display = "none"; resultsScreen.style.display = "none"; startErrorMsg.style.display = "none"; }
+
+    startBtn.addEventListener('click', startQuiz);
+    submitBtn.addEventListener('click', checkAnswer);
+    nextBtn.addEventListener('click', () => { if (answerLock) goToNext(); });
+    restartBtn.addEventListener('click', restart);
+</script>
+</body>
+</html>
