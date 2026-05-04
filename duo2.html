@@ -477,7 +477,7 @@
     let autoTransitionTimeout = null;
 
     // ⭐ ЗДЕСЬ ВСТАВЬТЕ ВАШ НОВЫЙ URL ⭐
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzCKVTSPWqSLQ4EuCUHCl3uFEwZKUL_6SNC3fPW4Nv90Z5bv0-4tta5pzTixoz6cosZ/exec";
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzp7q5a53yIpWOSOzRexaDgkYLKZjrjaS5s6YAufoC-1T0DBq85YB_L332MbVxNh2u4/exec";
 
     // DOM элементы
     const startScreen = document.getElementById('startScreen');
@@ -511,7 +511,7 @@
 
     function formatFeedbackMsg(isCorrect, explanation) {
         let msg = isCorrect ? "✅ Верно!" : "❌ Неверно.";
-        if (explanation && explanation.trim()) msg += "<br>📘 Примечание: " + explanation;
+        if (explanation && explanation.trim()) msg += "<br> Примечание: " + explanation;
         return msg;
     }
 
@@ -546,7 +546,7 @@
         else if (q.type === 'multiple') correctTxt = q.correctAnswers.map(i => q.options[i]).join(", ");
         else correctTxt = q.correctAnswers;
         let html = `<span>⏰ Время вышло! Правильный ответ: ${correctTxt}.`;
-        if (q.explanation) html += `<br>📘 Примечание: ${q.explanation}`;
+        if (q.explanation) html += `<br> Примечание: ${q.explanation}`;
         html += `</span>`;
         feedbackBlock.innerHTML = html;
         feedbackBlock.className = "feedback wrong";
@@ -566,7 +566,7 @@
         feedbackBlock.style.display = "block";
         submitBtn.style.display = "none";
         nextBtn.style.display = "flex";
-        nextBtn.textContent = (currentQuestionIndex + 1 === currentQuizQuestions.length) ? "🏁 Завершить квиз" : "➡ Перейти к следующему";
+        nextBtn.textContent = (currentQuestionIndex + 1 === currentQuizQuestions.length) ? "Завершить квиз" : "➡ Перейти к следующему";
     }
 
     function checkAnswer() {
