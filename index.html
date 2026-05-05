@@ -7,7 +7,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     body {
       font-family: "Roboto", Arial, sans-serif;
       background: #f0f4f8;
@@ -17,7 +16,6 @@
       align-items: center;
       padding: 20px;
     }
-
     .container {
       max-width: 860px;
       width: 100%;
@@ -26,13 +24,7 @@
       box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
       overflow: hidden;
     }
-
-    .header {
-      background: #003b6f;
-      padding: 24px 28px;
-      color: #fff;
-    }
-
+    .header { background: #003b6f; padding: 24px 28px; color: #fff; }
     .header h1 { font-weight: 500; font-size: 1.8rem; }
     .header p { opacity: 0.88; margin-top: 8px; }
 
@@ -90,15 +82,8 @@
       margin-top: 20px;
       transition: 0.2s;
     }
-
     .btn:hover { background: #002a50; transform: translateY(-1px); }
-
-    .btn-secondary {
-      background: #eef2f7;
-      color: #003b6f;
-      border: 1px solid #cbdde9;
-    }
-
+    .btn-secondary { background: #eef2f7; color: #003b6f; border: 1px solid #cbdde9; }
     .btn-secondary:hover { background: #e2e8f0; }
 
     .error-message {
@@ -110,7 +95,6 @@
       text-align: center;
       display: none;
     }
-
     .success-message {
       background: #e0f7e8;
       color: #0b5e2e;
@@ -129,7 +113,6 @@
       border-bottom: 1px solid #e2edf2;
       padding-bottom: 12px;
     }
-
     .question-counter {
       background: #eef3fc;
       padding: 0 14px;
@@ -142,7 +125,6 @@
       justify-content: center;
       line-height: 1;
     }
-
     .timer {
       font-size: 2rem;
       font-weight: 700;
@@ -151,7 +133,6 @@
       padding: 6px 18px;
       border-radius: 60px;
     }
-
     .timer.warning { color: #dc2626; background: #ffe8e8; }
 
     .question-text {
@@ -161,7 +142,6 @@
       color: #0a2a44;
       line-height: 1.4;
     }
-
     .option-item {
       margin-bottom: 14px;
       background: #f9fbfd;
@@ -169,7 +149,6 @@
       border-radius: 24px;
       border: 1px solid #e2edf2;
     }
-
     .option-item label { margin-left: 10px; cursor: pointer; }
 
     input[type="text"], input[type="password"] {
@@ -181,7 +160,6 @@
       font-family: inherit;
       outline: none;
     }
-
     input[type="text"]:focus, input[type="password"]:focus { border-color: #8ab0d1; }
 
     .feedback {
@@ -192,7 +170,6 @@
       background: #f2f6f9;
       line-height: 1.45;
     }
-
     .feedback.correct { background: #e0f7e8; color: #0b5e2e; border-left: 6px solid #2b8c4a; }
     .feedback.wrong { background: #ffeceb; color: #b91c1c; border-left: 6px solid #dc2626; }
 
@@ -203,7 +180,6 @@
       text-align: center;
       margin: 20px 0;
     }
-
     .stat-number { font-size: 2.5rem; font-weight: 700; color: #003b6f; }
 
     .auth-card {
@@ -213,19 +189,25 @@
       padding: 20px;
       margin-top: 8px;
     }
-
     .auth-actions {
       display: flex;
       gap: 12px;
       margin-top: 12px;
     }
-
     .auth-actions .btn { margin-top: 0; }
-
     .muted {
       color: #51657a;
       font-size: 0.95rem;
       margin-top: 8px;
+    }
+
+    .history-card {
+      background: #f9fbfd;
+      border: 1px solid #dce8f2;
+      border-radius: 18px;
+      padding: 14px;
+      margin-bottom: 10px;
+      line-height: 1.45;
     }
 
     @media (max-width: 650px) {
@@ -244,7 +226,7 @@
     </div>
 
     <div class="content">
-      <!-- ЭКРАН АВТОРИЗАЦИИ -->
+      <!-- AUTH -->
       <div id="authScreen">
         <h3>Вход в систему</h3>
         <p class="muted">Перед началом квиза зарегистрируйтесь или войдите.</p>
@@ -261,7 +243,7 @@
         </div>
       </div>
 
-      <!-- ЭКРАН НАСТРОЕК -->
+      <!-- START -->
       <div id="startScreen" style="display:none;">
         <div class="settings-group">
           <div class="settings-label">Тема</div>
@@ -293,25 +275,24 @@
         </div>
 
         <button class="btn" id="startQuizBtn">▶ Начать квиз</button>
+        <button class="btn btn-secondary" id="historyStartBtn" style="margin-top:10px;">История результатов</button>
         <div id="startErrorMsg" class="error-message"></div>
       </div>
 
-      <!-- ЭКРАН КВИЗА -->
+      <!-- QUIZ -->
       <div id="quizScreen" style="display:none;">
         <div class="quiz-header">
           <span class="question-counter" id="questionCounter">Вопрос 1 / 10</span>
           <span class="timer" id="timerDisplay">01:00</span>
         </div>
         <div class="question-text" id="questionText"></div>
-        <div id="optionsContainer" class="options-area"></div>
+        <div id="optionsContainer"></div>
         <div id="feedbackBlock" class="feedback" style="display:none;"></div>
-        <div class="action-buttons">
-          <button class="btn" id="submitAnswerBtn">Ответить</button>
-          <button class="btn btn-secondary" id="nextQuestionBtn" style="display:none;">➡ Перейти к следующему</button>
-        </div>
+        <button class="btn" id="submitAnswerBtn">Ответить</button>
+        <button class="btn btn-secondary" id="nextQuestionBtn" style="display:none;">➡ Перейти к следующему</button>
       </div>
 
-      <!-- ЭКРАН РЕЗУЛЬТАТОВ -->
+      <!-- RESULTS -->
       <div id="resultsScreen" style="display:none;">
         <h3>Результаты квиза</h3>
         <div class="result-stats">
@@ -322,15 +303,21 @@
         </div>
 
         <div id="resultSaveError" class="error-message"></div>
-        <div id="resultSaveSuccess" class="success-message"></div>
 
         <button class="btn" id="restartQuizBtn">Пройти ещё раз</button>
+        <button class="btn btn-secondary" id="historyBtn" style="margin-top:10px;">История результатов</button>
+      </div>
+
+      <!-- HISTORY -->
+      <div id="historyScreen" style="display:none;">
+        <h3>История результатов</h3>
+        <div id="historyList" style="margin-top:14px;"></div>
+        <button class="btn btn-secondary" id="backToResultsBtn">⬅ Назад</button>
       </div>
     </div>
   </div>
 
   <script>
-    // ===================== БАНК ВОПРОСОВ =====================
     const questionsBank = [
       { id:1, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"Что такое макропруденциальная политика Банка России?", options:["Политика по обеспечению ценовой стабильности","Политика по обеспечению стабильности финансовой системы","Регулирование макроэкономической деятельности кредитных и микрофинансовых организаций на региональном уровне","Политика, направленная на предотвращение банкротства отдельных крупных банков путём санации и предоставления экстренной ликвидности."], correctAnswers:1, explanation:"Макропруденциальная политика - политика по обеспечению стабильности финансовой системы." },
       { id:2, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"multiple", questionText:"Назовите два основных инструмента макропруденциальной политики Банка России, используемых в розничном кредитовании.", options:["Макропруденциальные лимиты","Макропруденциальные надбавки к коэффициентам риска","Антициклическая надбавка","Норма обязательных резервов"], correctAnswers:[0,1], explanation:"" },
@@ -369,10 +356,9 @@
       { id:35, topic:"Операционные процедуры Банка России", difficulty:"базовый", type:"open", questionText:"Мера, ограничивающая долю кредитов с высоким риском в портфеле банка?", options:[], correctAnswers:"макропруденциальный лимит", explanation:"Макропруденциальные лимиты (МПЛ)." }
     ];
 
-    // URL вашего Apps Script Web App
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxzkyJuobFB70OXLl_bwlk9hlSG6cIfBpTbDe0N23tNJGSI29ruUBHAFpLlki6JrriKRw/exec";
+    // ВСТАВЬТЕ СЮДА ВАШ URL WEB APP
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzikVPYRRpxzo9htNIBE4KVNIjouFATIVhCqh61zqYCdPNN6pM4fHhmRZmbrK_qQ_zNkg/exec";
 
-    // Глобальные переменные
     let currentQuizQuestions = [];
     let userAnswersRecord = [];
     let quizStartTimestamp = null;
@@ -384,14 +370,14 @@
     let autoTransitionTimeout = null;
     let currentUser = null;
     let savingInProgress = false;
+    let historyFrom = "results";
 
-    // DOM
-    let authScreen, startScreen, quizScreen, resultsScreen;
+    let authScreen, startScreen, quizScreen, resultsScreen, historyScreen;
     let authLogin, authPassword, loginBtn, registerBtn, authErrorMsg, authSuccessMsg;
-    let startErrorMsg, startBtn, submitBtn, nextBtn, restartBtn;
+    let startErrorMsg, startBtn, submitBtn, nextBtn, restartBtn, historyBtn, historyStartBtn, backToResultsBtn;
     let questionCounterSpan, timerDisplay, questionTextDiv, optionsContainer, feedbackBlock;
     let correctCountSpan, totalQuestionsStatSpan, percentageStatSpan, totalTimeSecSpan, resultUserName;
-    let resultSaveError, resultSaveSuccess;
+    let resultSaveError, historyList;
 
     function escapeHtml(str) {
       return String(str || "")
@@ -408,6 +394,18 @@
         .toLowerCase()
         .replace(/ё/g, "е")
         .replace(/\s+/g, " ");
+    }
+
+    function formatHistoryDate(value) {
+      const d = new Date(value);
+      if (isNaN(d.getTime())) return String(value || "");
+      return d.toLocaleString("ru-RU", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
     }
 
     function showError(el, msg) {
@@ -535,12 +533,11 @@
 
     function recordAnswer(isCorrect, userRaw, correctDisplay) {
       const q = currentQuestionObj;
-
       userAnswersRecord.push({
         questionId: q.id,
         questionText: q.questionText,
         userAnswer: userRaw,
-        isCorrect: isCorrect,
+        isCorrect,
         correctAnswer: correctDisplay,
         explanation: q.explanation || ""
       });
@@ -597,45 +594,28 @@
       if (answerLock) return;
 
       const q = currentQuestionObj;
-      let isCorrect = false;
-      let userRaw = "";
-      let correctDisplay = "";
+      let isCorrect = false, userRaw = "", correctDisplay = "";
 
       if (q.type === "single") {
         const selected = document.querySelector('input[name="singleOption"]:checked');
-        if (!selected) {
-          alert("Выберите вариант ответа.");
-          return;
-        }
+        if (!selected) return alert("Выберите вариант ответа.");
         const idx = Number(selected.value);
         userRaw = q.options[idx];
         correctDisplay = q.options[q.correctAnswers];
         isCorrect = idx === q.correctAnswers;
       } else if (q.type === "multiple") {
         const selectedEls = Array.from(document.querySelectorAll('input[name="multiOption"]:checked'));
-        if (selectedEls.length === 0) {
-          alert("Выберите минимум один вариант.");
-          return;
-        }
-
+        if (!selectedEls.length) return alert("Выберите минимум один вариант.");
         const selected = selectedEls.map(el => Number(el.value)).sort((a, b) => a - b);
         const correct = [...q.correctAnswers].sort((a, b) => a - b);
-
         isCorrect = selected.length === correct.length && selected.every((v, i) => v === correct[i]);
         userRaw = selected.map(i => q.options[i]).join("; ");
         correctDisplay = q.correctAnswers.map(i => q.options[i]).join("; ");
       } else {
         const input = document.getElementById("openInput");
-        if (!input) return;
-
         const userNorm = normalizeAnswer(input.value);
         const correctNorm = normalizeAnswer(q.correctAnswers);
-
-        if (!userNorm) {
-          alert("Введите ответ.");
-          return;
-        }
-
+        if (!userNorm) return alert("Введите ответ.");
         isCorrect = userNorm === correctNorm;
         userRaw = input.value.trim();
         correctDisplay = q.correctAnswers;
@@ -650,7 +630,7 @@
     function goToNext() {
       clearAuto();
       if (currentQuestionIndex + 1 < currentQuizQuestions.length) {
-        currentQuestionIndex += 1;
+        currentQuestionIndex++;
         renderCurrentQuestion();
       } else {
         finishQuiz();
@@ -660,16 +640,11 @@
     async function saveResultAuto(finalData) {
       if (savingInProgress) return;
       savingInProgress = true;
-
       hideMsg(resultSaveError);
-      hideMsg(resultSaveSuccess);
 
       const saveRes = await callAppsScript("registerResult", finalData);
-
-      if (saveRes && saveRes.success !== false) {
-        showSuccess(resultSaveSuccess, "Результат автоматически сохранён в Google Таблицу.");
-      } else {
-        showError(resultSaveError, "Ошибка автосохранения результата. Проверьте Apps Script/интернет.");
+      if (!saveRes || saveRes.success === false) {
+        showError(resultSaveError, "Не удалось сохранить результат. Попробуйте позже.");
       }
 
       savingInProgress = false;
@@ -692,16 +667,10 @@
 
       quizScreen.style.display = "none";
       resultsScreen.style.display = "block";
+      historyScreen.style.display = "none";
 
       const now = new Date();
-      const formattedDate = now.toLocaleString("ru-RU", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit"
-      });
+      const formattedDate = now.toISOString();
 
       const finalData = {
         date: formattedDate,
@@ -713,7 +682,7 @@
         },
         totalCorrect: correctTotal,
         totalQuestions: totalQ,
-        percent: percent,
+        percent,
         totalTimeSec: totalSeconds,
         answers: userAnswersRecord
       };
@@ -740,16 +709,14 @@
         currentQuestionObj.options.forEach((opt, idx) => {
           const div = document.createElement("div");
           div.className = "option-item";
-          div.innerHTML = `<input type="radio" name="singleOption" value="${idx}" id="opt_${idx}">
-                           <label for="opt_${idx}">${escapeHtml(opt)}</label>`;
+          div.innerHTML = `<input type="radio" name="singleOption" value="${idx}" id="opt_${idx}"> <label for="opt_${idx}">${escapeHtml(opt)}</label>`;
           optionsContainer.appendChild(div);
         });
       } else if (currentQuestionObj.type === "multiple") {
         currentQuestionObj.options.forEach((opt, idx) => {
           const div = document.createElement("div");
           div.className = "option-item";
-          div.innerHTML = `<input type="checkbox" name="multiOption" value="${idx}" id="ch_${idx}">
-                           <label for="ch_${idx}">${escapeHtml(opt)}</label>`;
+          div.innerHTML = `<input type="checkbox" name="multiOption" value="${idx}" id="ch_${idx}"> <label for="ch_${idx}">${escapeHtml(opt)}</label>`;
           optionsContainer.appendChild(div);
         });
       } else {
@@ -778,33 +745,24 @@
 
     function buildQuiz(theme, difficulty, count) {
       const filtered = questionsBank.filter(q => (theme === "mix" || q.topic === theme) && q.difficulty === difficulty);
-
       if (filtered.length < count) {
         return { success: false, msg: `Не хватает вопросов: доступно ${filtered.length}, запрошено ${count}.` };
       }
-
       const selected = shuffleArray([...filtered]).slice(0, count);
       return { success: true, questions: shuffleArray(selected) };
     }
 
     function startQuiz() {
-      if (!currentUser) {
-        showError(startErrorMsg, "Сначала выполните вход.");
-        return;
-      }
+      if (!currentUser) return showError(startErrorMsg, "Сначала выполните вход.");
 
       const theme = document.querySelector('input[name="theme"]:checked').value;
       const difficulty = document.querySelector('input[name="difficulty"]:checked').value;
       const count = Number(document.getElementById("questionCountSelect").value);
 
       const build = buildQuiz(theme, difficulty, count);
-      if (!build.success) {
-        showError(startErrorMsg, build.msg);
-        return;
-      }
+      if (!build.success) return showError(startErrorMsg, build.msg);
 
       hideMsg(startErrorMsg);
-
       currentQuizQuestions = build.questions;
       userAnswersRecord = [];
       currentQuestionIndex = 0;
@@ -814,6 +772,7 @@
       startScreen.style.display = "none";
       quizScreen.style.display = "block";
       resultsScreen.style.display = "none";
+      historyScreen.style.display = "none";
 
       renderCurrentQuestion();
     }
@@ -826,10 +785,44 @@
       startScreen.style.display = "block";
       quizScreen.style.display = "none";
       resultsScreen.style.display = "none";
+      historyScreen.style.display = "none";
 
       hideMsg(startErrorMsg);
       hideMsg(resultSaveError);
-      hideMsg(resultSaveSuccess);
+    }
+
+    function renderHistory(items) {
+      if (!items.length) {
+        historyList.innerHTML = `<div class="history-card">У вас пока нет сохранённых результатов.</div>`;
+        return;
+      }
+
+      historyList.innerHTML = items.map(item => `
+        <div class="history-card">
+          <div><strong>${escapeHtml(formatHistoryDate(item.date))}</strong></div>
+          <div>Тема: ${escapeHtml(String(item.theme))}</div>
+          <div>Уровень: ${escapeHtml(String(item.difficulty))}</div>
+          <div>Результат: <strong>${item.correctCount}/${item.questionsCount}</strong> (${item.percent}%)</div>
+          <div>Время: ${item.timeSec} сек</div>
+        </div>
+      `).join("");
+    }
+
+    async function openHistory() {
+      if (!currentUser) return;
+
+      const res = await callAppsScript("getUserHistory", { username: currentUser });
+      if (res && res.success) {
+        renderHistory(res.history || []);
+
+        authScreen.style.display = "none";
+        startScreen.style.display = "none";
+        quizScreen.style.display = "none";
+        resultsScreen.style.display = "none";
+        historyScreen.style.display = "block";
+      } else {
+        alert((res && res.error) ? res.error : "Не удалось загрузить историю.");
+      }
     }
 
     function init() {
@@ -837,6 +830,7 @@
       startScreen = document.getElementById("startScreen");
       quizScreen = document.getElementById("quizScreen");
       resultsScreen = document.getElementById("resultsScreen");
+      historyScreen = document.getElementById("historyScreen");
 
       authLogin = document.getElementById("authLogin");
       authPassword = document.getElementById("authPassword");
@@ -850,6 +844,9 @@
       submitBtn = document.getElementById("submitAnswerBtn");
       nextBtn = document.getElementById("nextQuestionBtn");
       restartBtn = document.getElementById("restartQuizBtn");
+      historyBtn = document.getElementById("historyBtn");
+      historyStartBtn = document.getElementById("historyStartBtn");
+      backToResultsBtn = document.getElementById("backToResultsBtn");
 
       questionCounterSpan = document.getElementById("questionCounter");
       timerDisplay = document.getElementById("timerDisplay");
@@ -862,22 +859,37 @@
       percentageStatSpan = document.getElementById("percentageStat");
       totalTimeSecSpan = document.getElementById("totalTimeSec");
       resultUserName = document.getElementById("resultUserName");
+
       resultSaveError = document.getElementById("resultSaveError");
-      resultSaveSuccess = document.getElementById("resultSaveSuccess");
+      historyList = document.getElementById("historyList");
 
       loginBtn.addEventListener("click", loginUser);
       registerBtn.addEventListener("click", registerUser);
-
-      authPassword.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") loginUser();
-      });
+      authPassword.addEventListener("keydown", (e) => { if (e.key === "Enter") loginUser(); });
 
       startBtn.addEventListener("click", startQuiz);
       submitBtn.addEventListener("click", checkAnswer);
-      nextBtn.addEventListener("click", () => {
-        if (answerLock) goToNext();
-      });
+      nextBtn.addEventListener("click", () => { if (answerLock) goToNext(); });
       restartBtn.addEventListener("click", restart);
+
+      historyBtn.addEventListener("click", () => {
+        historyFrom = "results";
+        openHistory();
+      });
+
+      historyStartBtn.addEventListener("click", () => {
+        historyFrom = "start";
+        openHistory();
+      });
+
+      backToResultsBtn.addEventListener("click", () => {
+        historyScreen.style.display = "none";
+        if (historyFrom === "start") {
+          startScreen.style.display = "block";
+        } else {
+          resultsScreen.style.display = "block";
+        }
+      });
     }
 
     document.addEventListener("DOMContentLoaded", init);
