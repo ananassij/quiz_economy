@@ -1,165 +1,378 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Квиз | Банк России</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Roboto', Arial, sans-serif; background: #f0f4f8; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
-        .container { max-width: 800px; width: 100%; background: white; border-radius: 32px; box-shadow: 0 12px 28px rgba(0,0,0,0.08); overflow: hidden; }
-        .header { background: #003B6F; padding: 24px 28px; color: white; }
-        .header h1 { font-weight: 500; font-size: 1.8rem; }
-        .header p { opacity: 0.85; margin-top: 8px; }
-        .content { padding: 32px 28px; }
-        .settings-group { margin-bottom: 28px; }
-        .settings-label { font-weight: 600; color: #003B6F; margin-bottom: 12px; border-left: 4px solid #003B6F; padding-left: 12px; }
-        .radio-group, .select-group { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 8px; }
-        .radio-group label, .select-group select { background: #f8fafc; padding: 10px 18px; border-radius: 48px; font-weight: 500; border: 1px solid #cfdee9; cursor: pointer; transition: 0.2s; font-family: inherit; font-size: 1rem; }
-        .select-group select { appearance: none; -webkit-appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23003B6F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>'); background-repeat: no-repeat; background-position: right 18px center; padding-right: 42px; }
-        .radio-group label:hover, .select-group select:hover { background: #e6edf4; }
-        .btn { background: #003B6F; color: white; border: none; padding: 14px 28px; font-size: 1rem; font-weight: 600; border-radius: 48px; cursor: pointer; width: 100%; margin-top: 20px; transition: 0.2s; }
-        .btn:hover { background: #002a50; transform: translateY(-1px); }
-        .btn-secondary { background: #eef2f7; color: #003B6F; border: 1px solid #cbdde9; }
-        .btn-secondary:hover { background: #e2e8f0; }
-        .error-message { background: #ffe6e5; color: #b00020; padding: 12px; border-radius: 20px; margin-top: 18px; text-align: center; display: none; }
-        .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; border-bottom: 1px solid #e2edf2; padding-bottom: 12px; }
-        .question-counter { background: #eef3fc; padding: 0 14px; border-radius: 40px; color: #003B6F; font-weight: 600; height: 40px; display: flex; align-items: center; justify-content: center; line-height: 1; }
-        .timer { font-size: 2rem; font-weight: 700; font-family: monospace; background: #f0f4fa; padding: 6px 18px; border-radius: 60px; }
-        .timer.warning { color: #dc2626; background: #ffe8e8; }
-        .question-text { font-size: 1.4rem; font-weight: 500; margin: 20px 0 24px; color: #0a2a44; }
-        .option-item { margin-bottom: 14px; background: #f9fbfd; padding: 12px 18px; border-radius: 24px; border: 1px solid #e2edf2; }
-        .option-item label { margin-left: 10px; cursor: pointer; }
-        input[type="text"] { width: 100%; padding: 14px 18px; border-radius: 48px; border: 1px solid #cfdee9; font-size: 1rem; font-family: inherit; }
-        .feedback { margin: 18px 0 20px; padding: 14px 18px; border-radius: 20px; font-weight: 500; background: #f2f6f9; }
-        .feedback.correct { background: #e0f7e8; color: #0b5e2e; border-left: 6px solid #2b8c4a; }
-        .feedback.wrong { background: #ffeceb; color: #b91c1c; border-left: 6px solid #dc2626; }
-        .result-stats { background: #f2f6fc; padding: 20px; border-radius: 32px; text-align: center; margin: 20px 0; }
-        .stat-number { font-size: 2.5rem; font-weight: 700; color: #003B6F; }
-        .save-result-area { margin-top: 20px; padding: 20px; background: #f8fafc; border-radius: 28px; }
-        .save-result-area input { width: 100%; margin-bottom: 15px; }
-        .radio-row { display: flex; gap: 20px; margin: 15px 0; align-items: center; flex-wrap: wrap; }
-        @media (max-width: 550px) { .question-text { font-size: 1.2rem; } .timer { font-size: 1.5rem; } .question-counter { height: 36px; font-size: 0.9rem; } }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Квиз | Банк России</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "Roboto", Arial, sans-serif;
+      background: #f0f4f8;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 860px;
+      width: 100%;
+      background: #fff;
+      border-radius: 32px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+    }
+
+    .header {
+      background: #003b6f;
+      padding: 24px 28px;
+      color: #fff;
+    }
+
+    .header h1 { font-weight: 500; font-size: 1.8rem; }
+    .header p { opacity: 0.88; margin-top: 8px; }
+
+    .content { padding: 32px 28px; }
+
+    .settings-group { margin-bottom: 28px; }
+    .settings-label {
+      font-weight: 600;
+      color: #003b6f;
+      margin-bottom: 12px;
+      border-left: 4px solid #003b6f;
+      padding-left: 12px;
+    }
+
+    .radio-group, .select-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      margin-top: 8px;
+    }
+
+    .radio-group label, .select-group select {
+      background: #f8fafc;
+      padding: 10px 18px;
+      border-radius: 48px;
+      font-weight: 500;
+      border: 1px solid #cfdee9;
+      cursor: pointer;
+      transition: 0.2s;
+      font-family: inherit;
+      font-size: 1rem;
+    }
+
+    .select-group select {
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23003B6F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
+      background-repeat: no-repeat;
+      background-position: right 18px center;
+      padding-right: 42px;
+    }
+
+    .radio-group label:hover, .select-group select:hover { background: #e6edf4; }
+
+    .btn {
+      background: #003b6f;
+      color: #fff;
+      border: none;
+      padding: 14px 28px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 48px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 20px;
+      transition: 0.2s;
+    }
+
+    .btn:hover { background: #002a50; transform: translateY(-1px); }
+
+    .btn-secondary {
+      background: #eef2f7;
+      color: #003b6f;
+      border: 1px solid #cbdde9;
+    }
+
+    .btn-secondary:hover { background: #e2e8f0; }
+
+    .error-message {
+      background: #ffe6e5;
+      color: #b00020;
+      padding: 12px;
+      border-radius: 20px;
+      margin-top: 18px;
+      text-align: center;
+      display: none;
+    }
+
+    .success-message {
+      background: #e0f7e8;
+      color: #0b5e2e;
+      padding: 12px;
+      border-radius: 20px;
+      margin-top: 18px;
+      text-align: center;
+      display: none;
+    }
+
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+      border-bottom: 1px solid #e2edf2;
+      padding-bottom: 12px;
+    }
+
+    .question-counter {
+      background: #eef3fc;
+      padding: 0 14px;
+      border-radius: 40px;
+      color: #003b6f;
+      font-weight: 600;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+
+    .timer {
+      font-size: 2rem;
+      font-weight: 700;
+      font-family: monospace;
+      background: #f0f4fa;
+      padding: 6px 18px;
+      border-radius: 60px;
+    }
+
+    .timer.warning { color: #dc2626; background: #ffe8e8; }
+
+    .question-text {
+      font-size: 1.35rem;
+      font-weight: 500;
+      margin: 20px 0 24px;
+      color: #0a2a44;
+      line-height: 1.4;
+    }
+
+    .option-item {
+      margin-bottom: 14px;
+      background: #f9fbfd;
+      padding: 12px 18px;
+      border-radius: 24px;
+      border: 1px solid #e2edf2;
+    }
+
+    .option-item label { margin-left: 10px; cursor: pointer; }
+
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 14px 18px;
+      border-radius: 48px;
+      border: 1px solid #cfdee9;
+      font-size: 1rem;
+      font-family: inherit;
+      outline: none;
+    }
+
+    input[type="text"]:focus, input[type="password"]:focus { border-color: #8ab0d1; }
+
+    .feedback {
+      margin: 18px 0 20px;
+      padding: 14px 18px;
+      border-radius: 20px;
+      font-weight: 500;
+      background: #f2f6f9;
+      line-height: 1.45;
+    }
+
+    .feedback.correct { background: #e0f7e8; color: #0b5e2e; border-left: 6px solid #2b8c4a; }
+    .feedback.wrong { background: #ffeceb; color: #b91c1c; border-left: 6px solid #dc2626; }
+
+    .result-stats {
+      background: #f2f6fc;
+      padding: 20px;
+      border-radius: 32px;
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .stat-number { font-size: 2.5rem; font-weight: 700; color: #003b6f; }
+
+    .auth-card {
+      background: #f8fafc;
+      border: 1px solid #e2edf2;
+      border-radius: 26px;
+      padding: 20px;
+      margin-top: 8px;
+    }
+
+    .auth-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .auth-actions .btn { margin-top: 0; }
+
+    .muted {
+      color: #51657a;
+      font-size: 0.95rem;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 650px) {
+      .question-text { font-size: 1.15rem; }
+      .timer { font-size: 1.45rem; }
+      .question-counter { height: 36px; font-size: 0.9rem; }
+      .auth-actions { flex-direction: column; }
+    }
+  </style>
 </head>
 <body>
-<div class="container">
+  <div class="container">
     <div class="header">
-        <h1>Банк России</h1>
-        <p>Операционные процедуры и макропруденциальная политика</p>
+      <h1>Банк России</h1>
+      <p>Операционные процедуры и макропруденциальная политика</p>
     </div>
+
     <div class="content">
-        <!-- ЭКРАН НАСТРОЕК (без вопроса о первом прохождении) -->
-        <div id="startScreen">
-            <div class="settings-group"><div class="settings-label">Тема</div>
-                <div class="radio-group">
-                    <label><input type="radio" name="theme" value="Операционные процедуры Банка России"> Операционные процедуры</label>
-                    <label><input type="radio" name="theme" value="Макропруденциальная политика Банка России" checked> Макропруденциальная политика</label>
-                    <label><input type="radio" name="theme" value="mix"> Микс тем</label>
-                </div>
-            </div>
-            <div class="settings-group"><div class="settings-label">Уровень сложности</div>
-                <div class="radio-group">
-                    <label><input type="radio" name="difficulty" value="базовый" checked> Базовый</label>
-                    <label><input type="radio" name="difficulty" value="продвинутый"> Продвинутый</label>
-                    <label><input type="radio" name="difficulty" value="сложный"> Сложный</label>
-                </div>
-            </div>
-            <div class="settings-group"><div class="settings-label">Количество вопросов</div>
-                <div class="select-group">
-                    <select id="questionCountSelect">
-                        <option value="5">5 вопросов</option>
-                        <option value="10" selected>10 вопросов</option>
-                        <option value="15">15 вопросов</option>
-                    </select>
-                </div>
-            </div>
-            <button class="btn" id="startQuizBtn">▶ Начать квиз</button>
-            <div id="startErrorMsg" class="error-message"></div>
+      <!-- ЭКРАН АВТОРИЗАЦИИ -->
+      <div id="authScreen">
+        <h3>Вход в систему</h3>
+        <p class="muted">Перед началом квиза зарегистрируйтесь или войдите.</p>
+
+        <div class="auth-card">
+          <input type="text" id="authLogin" placeholder="Логин" autocomplete="off" />
+          <input type="password" id="authPassword" placeholder="Пароль" style="margin-top:10px;" />
+          <div class="auth-actions">
+            <button class="btn" id="loginBtn">Войти</button>
+            <button class="btn btn-secondary" id="registerBtn">Регистрация</button>
+          </div>
+          <div id="authErrorMsg" class="error-message"></div>
+          <div id="authSuccessMsg" class="success-message"></div>
+        </div>
+      </div>
+
+      <!-- ЭКРАН НАСТРОЕК -->
+      <div id="startScreen" style="display:none;">
+        <div class="settings-group">
+          <div class="settings-label">Тема</div>
+          <div class="radio-group">
+            <label><input type="radio" name="theme" value="Операционные процедуры Банка России" /> Операционные процедуры</label>
+            <label><input type="radio" name="theme" value="Макропруденциальная политика Банка России" checked /> Макропруденциальная политика</label>
+            <label><input type="radio" name="theme" value="mix" /> Микс тем</label>
+          </div>
         </div>
 
-        <!-- ЭКРАН КВИЗА -->
-        <div id="quizScreen" style="display: none;">
-            <div class="quiz-header">
-                <span class="question-counter" id="questionCounter">Вопрос 1 / 10</span>
-                <span class="timer" id="timerDisplay">01:00</span>
-            </div>
-            <div class="question-text" id="questionText"></div>
-            <div id="optionsContainer" class="options-area"></div>
-            <div id="feedbackBlock" class="feedback" style="display: none;"></div>
-            <div class="action-buttons">
-                <button class="btn" id="submitAnswerBtn">Ответить</button>
-                <button class="btn btn-secondary" id="nextQuestionBtn" style="display: none;">➡ Перейти к следующему</button>
-            </div>
+        <div class="settings-group">
+          <div class="settings-label">Уровень сложности</div>
+          <div class="radio-group">
+            <label><input type="radio" name="difficulty" value="базовый" checked /> Базовый</label>
+            <label><input type="radio" name="difficulty" value="продвинутый" /> Продвинутый</label>
+            <label><input type="radio" name="difficulty" value="сложный" /> Сложный</label>
+          </div>
         </div>
 
-        <!-- ЭКРАН РЕЗУЛЬТАТОВ с полем имени и вопросом о первом прохождении -->
-        <div id="resultsScreen" style="display: none;">
-            <h3>Результаты квиза</h3>
-            <div class="result-stats">
-                <div><span class="stat-number" id="correctCount">0</span> / <span id="totalQuestionsStat">0</span></div>
-                <div>Процент верных: <strong id="percentageStat">0%</strong></div>
-                <div>⏱ Общее время: <strong id="totalTimeSec">0</strong> секунд</div>
-            </div>
-            <div class="save-result-area">
-                <input type="text" id="usernameInput" placeholder="Введите ваше имя (логин)" autocomplete="off">
-                <div class="radio-row">
-                    <span style="font-weight: 500;">Вы впервые проходите этот квиз?</span>
-                    <label><input type="radio" name="firstTime" value="yes"> Да</label>
-                    <label><input type="radio" name="firstTime" value="no" checked> Нет</label>
-                </div>
-                <button id="saveResultBtn" class="btn" style="margin-top: 5px;">Сохранить результат</button>
-                <div id="saveResultMsg" class="error-message" style="margin-top: 15px; display: none;"></div>
-            </div>
-            <button class="btn" id="restartQuizBtn" style="margin-top: 15px;">Пройти ещё раз</button>
+        <div class="settings-group">
+          <div class="settings-label">Количество вопросов</div>
+          <div class="select-group">
+            <select id="questionCountSelect">
+              <option value="5">5 вопросов</option>
+              <option value="10" selected>10 вопросов</option>
+              <option value="15">15 вопросов</option>
+            </select>
+          </div>
         </div>
+
+        <button class="btn" id="startQuizBtn">▶ Начать квиз</button>
+        <div id="startErrorMsg" class="error-message"></div>
+      </div>
+
+      <!-- ЭКРАН КВИЗА -->
+      <div id="quizScreen" style="display:none;">
+        <div class="quiz-header">
+          <span class="question-counter" id="questionCounter">Вопрос 1 / 10</span>
+          <span class="timer" id="timerDisplay">01:00</span>
+        </div>
+        <div class="question-text" id="questionText"></div>
+        <div id="optionsContainer" class="options-area"></div>
+        <div id="feedbackBlock" class="feedback" style="display:none;"></div>
+        <div class="action-buttons">
+          <button class="btn" id="submitAnswerBtn">Ответить</button>
+          <button class="btn btn-secondary" id="nextQuestionBtn" style="display:none;">➡ Перейти к следующему</button>
+        </div>
+      </div>
+
+      <!-- ЭКРАН РЕЗУЛЬТАТОВ -->
+      <div id="resultsScreen" style="display:none;">
+        <h3>Результаты квиза</h3>
+        <div class="result-stats">
+          <div><span class="stat-number" id="correctCount">0</span> / <span id="totalQuestionsStat">0</span></div>
+          <div>Процент верных: <strong id="percentageStat">0%</strong></div>
+          <div>⏱ Общее время: <strong id="totalTimeSec">0</strong> секунд</div>
+          <div style="margin-top:8px;">Пользователь: <strong id="resultUserName">—</strong></div>
+        </div>
+
+        <div id="resultSaveError" class="error-message"></div>
+        <div id="resultSaveSuccess" class="success-message"></div>
+
+        <button class="btn" id="restartQuizBtn">Пройти ещё раз</button>
+      </div>
     </div>
-</div>
+  </div>
 
-<script>
-    // ===================== БАНК ВОПРОСОВ (35) =====================
+  <script>
+    // ===================== БАНК ВОПРОСОВ =====================
     const questionsBank = [
-        // 1–25: Макропруденциальная политика (индексы с 0)
-        { id:1, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"Что такое макропруденциальная политика Банка России?", options:["Политика по обеспечению ценовой стабильности","Политика по обеспечению стабильности финансовой системы","Регулирование макроэкономической деятельности кредитных и микрофинансовых организаций на региональном уровне","Политика, направленная на предотвращение банкротства отдельных крупных банков путём санации и предоставления экстренной ликвидности."], correctAnswers:1, explanation:"Макропруденциальная политика - политика по обеспечению стабильности финансовой системы." },
-        { id:2, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"multiple", questionText:"Назовите два основных инструмента макропруденциальной политики Банка России, используемых в розничном кредитовании.", options:["Макропруденциальные лимиты","Макропруденциальные надбавки к коэффициентам риска","Антициклическая надбавка","Норма обязательных резервов"], correctAnswers:[0,1], explanation:"" },
-        { id:3, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"Как рассчитывается показатель долговой нагрузки заемщика?", options:["Отношение общей суммы кредита к стоимости залога","Отношение стоимости залога к общей сумме кредита","Отношение суммы просроченной задолженности к объему кредитного портфеля","Отношение среднемесячных платежей по всем кредитам и займам к среднемесячному доходу заемщика (в процентах)"], correctAnswers:3, explanation:"" },
-        { id:4, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"Для чего Банк России устанавливает макропруденциальные лимиты?", options:["Для снижения инфляции через ограничение денежного предложения","Для ограничения закредитованности граждан и формирования более сбалансированной структуры розничного кредитования","Чтобы установить максимальную сумму, которую банк может потерять при банкротстве одного крупного заёмщика","Для ограничения общего объёма кредитов, который банки могут выдать без обеспечения в течение одного квартала"], correctAnswers:1, explanation:"" },
-        { id:5, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"multiple", questionText:"На какие сегменты кредитования Банк России может устанавливать макропруденциальные лимиты? Выберите три варианта ответа.", options:["Необеспеченные потребительские кредиты","Корпоративные кредиты","Автокредиты","Ипотека"], correctAnswers:[0,2,3], explanation:"" },
-        { id:6, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"С какой целью применяется антициклическая надбавка к капиталу банков?", options:["Для ограничения валютных рисков банков","Для компенсации потерь кредитных организаций при обесценении залога","Чтобы защитить крупнейшие системно значимые банки от внезапного оттока вкладов населения","Создание дополнительного буфера капитала, который банки могут использовать в кризисные периоды"], correctAnswers:3, explanation:"Антициклическая надбавка создаёт буфер капитала в хорошие времена." },
-        { id:7, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"С какой периодичностью Банк России пересматривает решения по макропруденциальной политике?", options:["Ежемесячно","Ежеквартально","Раз в полгода","Ежегодно"], correctAnswers:1, explanation:"" },
-        { id:8, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"Каким организациям, помимо банков, Банк России может устанавливать макропруденциальные лимиты?", options:["Страховым компаниям","Пенсионным фондам","Микрофинансовым организациям","Кредитным кооперативам"], correctAnswers:2, explanation:"" },
-        { id:9, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"Что такое \"макропруденциальный буфер капитала\"?", options:["Запас собственных средств (капитала), который банки формируют под рискованные кредиты благодаря действию макропруденциальных надбавок","Часть уставного капитала кредитной организации, зарезервированная на случай отзыва лицензии","Специальный счет кредитной или микрофинансовой организации, открытый в Банке России для покрытия операционных убытков","Это резервный фонд, который формируется за счет средств Банка России для экстренной докапитализации любого банка в случае его банкротства"], correctAnswers:0, explanation:"Буфер капитала формируется благодаря макропруденциальным надбавкам." },
-        { id:10, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"К какому типу кредитов применяются макропруденциальные лимиты?", options:["К розничным кредитам (кредиты физическим лицам)","К субординированным кредитам","К любым корпоративным кредитам","К корпоративным кредитам для малых и средних предприятий"], correctAnswers:0, explanation:"" },
-        { id:11, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"В каком документе Банк России систематизировал свои подходы к проведению макропруденциальной политики?", options:["Основные направления единой государственной денежно-кредитной политики","Обзор финансовой стабильности","Основные подходы к проведению макропруденциальной политики","Политика финансового оздоровления кредитных и микрофинансовых организаций"], correctAnswers:2, explanation:"" },
-        { id:12, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"Являются ли макропруденциальные лимиты постоянной мерой?", options:["Да, они устанавливаются один раз и не меняются","Нет, они могут пересматриваться ежеквартально в зависимости от ситуации","Нет, они вводятся только на время кризиса","Нет, они пересматриваются ежегодно по итогам года"], correctAnswers:1, explanation:"" },
-        { id:13, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"multiple", questionText:"Какие показатели, помимо показателя долговой нагрузки (ПДН), являются ключевыми для оценки риска в ипотеке?", options:["Отношение величины кредита к стоимости залога (LTV)","Кредитный рейтинг застройщика","Кредитный рейтинг заёмщика и его трудоустройство","Размер первоначального взноса, по договорам долевого участия"], correctAnswers:[0,3], explanation:"LTV или размер первоначального взноса." },
-        { id:14, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"multiple", questionText:"Выберите 2 основные цели макропруденциальной политики Банка России.", options:["Защита и обеспечение устойчивости рубля посредством поддержания ценовой стабильности","Содействие развитию конкурентоспособного финансового рынка","Ограничение масштаба уязвимостей в финансовой системе","Накопление запаса капитала и ликвидности у участников финансового рынка","Регулирование макроэкономической деятельности участников финансовой системы"], correctAnswers:[2,3], explanation:"Цели: ограничить уязвимости и накопить буферы." },
-        { id:15, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"Какой из макропруденциальных инструментов используется ТОЛЬКО для банков?", options:["Норматив краткосрочной ликвидности","Антициклические надбавки","Макропруденциальные лимиты","Макропруденциальные надбавки"], correctAnswers:1, explanation:"Антициклические надбавки только для банков." },
-        { id:16, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"Какой макропруденциальный инструмент Банк России начал применять первым?", options:["Норматив краткосрочной ликвидности","Антициклическая надбавка","Макропруденциальные лимиты","Макропруденциальные надбавки"], correctAnswers:3, explanation:"Первыми были макропруденциальные надбавки." },
-        { id:17, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"Применяются ли макропруденциальные надбавки к кредитам, выданным до их введения?", options:["Да, применяются ко всем кредитам","Нет, только к вновь выдаваемым кредитам","Да, выборочно, по решению Банка России","Да, выборочно по решению кредитной организации"], correctAnswers:1, explanation:"Надбавки применяются к вновь выдаваемым кредитам." },
-        { id:18, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"На основе чего определяется целевой уровень антициклической надбавки к капиталу банков?", options:["На основе прогноза инфляции","На основе среднего значения ключевой ставки за последние 5 лет","На основе рекомендация Минфина","На основе результатов макропруденциального стресс-тестирования"], correctAnswers:3, explanation:"" },
-        { id:19, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"open", questionText:"Как называется устойчивость финансовой системы к шокам и бесперебойное и эффективное ее функционирование? Назовите термин двумя словами", options:[], correctAnswers:"финансовая стабильность", explanation:"" },
-        { id:20, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"С какой периодичностью Банк России проводит макропруденциальное стресс-тестирование?", options:["Ежеквартально","По мере необходимости, но не реже 1 раза в полугодие","Раз в год","По мере необходимости, но не реже 1 раза в 2 года"], correctAnswers:2, explanation:"Ежегодно." },
-        { id:21, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"Когда решение Совета директоров Банка России о снижении макропруденциальных требований вступает в силу?", options:["С начала следующего календарного квартала","Через месяц после принятия решения","Совет директоров назначает дату вступления решения в силу","С момента принятия решения"], correctAnswers:3, explanation:"Снижение требований вступает в силу сразу." },
-        { id:22, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"В каком материале описывается как Банк России выявляет системные риски, принимает решения на разных стадиях финансового цикла и учитывает взаимосвязь различных инструментов. Также в этом материале показано, почему макропруденциальная политика не может служить инструментом обеспечения ценовой стабильности.", options:["Основные направления единой государственной денежно-кредитной политики","Обзор финансовой стабильности","Основные направления единой государственной макропруденциальной политики","Основные подходы к проведению макропруденциальной политики"], correctAnswers:3, explanation:"" },
-        { id:23, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"open", questionText:"Какое понятие описывает заметную волатильность на финансовых рынках или в финансовых потоках безотносительно системного эффекта? Назовите термин 2 словами", options:[], correctAnswers:"финансовая нестабильность", explanation:"" },
-        { id:24, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"С какой периодичностью начиная с 2026 года Банк России публикует график заседаний Совета директоров по макропруденциальной политике?", options:["Ежемесячно","Ежеквартально","Раз в полгода","Ежегодно"], correctAnswers:3, explanation:"График публикуется ежегодно." },
-        { id:25, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"Для каких банков устанавливаются значения макропруденциальных лимитов, указанные в пресс-релизах Банка России?", options:["Для банков с базовой лицензией","Для банков с универсальной лицензией","Только для системно значимых банков","Для всех банков и филиалов иностранных банков, работающих на территории России"], correctAnswers:1, explanation:"" },
-        // 26–35: Операционные процедуры
-        { id:26, topic:"Операционные процедуры Банка России", difficulty:"базовый", type:"single", questionText:"Что такое ключевая ставка?", options:["Ставка по депозитам физлиц","Процент, по которому ЦБ выдаёт кредиты банкам на 1 неделю","Ставка рефинансирования","Ключевой параметр инфляции"], correctAnswers:1, explanation:"Ключевая ставка — основной инструмент ДКП." },
-        { id:27, topic:"Операционные процедуры Банка России", difficulty:"базовый", type:"multiple", questionText:"Какие инструменты относятся к макропруденциальной политике? (два)", options:["Надбавки к рискам","Лимиты на долю рискованных кредитов","Ключевая ставка","Валютные интервенции"], correctAnswers:[0,1], explanation:"Надбавки и лимиты — макропруденциальные инструменты." },
-        { id:28, topic:"Операционные процедуры Банка России", difficulty:"продвинутый", type:"open", questionText:"Расшифруйте аббревиатуру ОФЗ", options:[], correctAnswers:"облигации федерального займа", explanation:"Государственные ценные бумаги." },
-        { id:29, topic:"Операционные процедуры Банка России", difficulty:"сложный", type:"single", questionText:"Что такое антициклический буфер капитала?", options:["Дополнительный капитал в период спада","Резерв на валютные риски","Норматив ликвидности","Отчисления в ФОМС"], correctAnswers:0, explanation:"Накопление капитала для защиты от спадов." },
-        { id:30, topic:"Операционные процедуры Банка России", difficulty:"базовый", type:"single", questionText:"Как часто Совет директоров пересматривает ключевую ставку?", options:["Раз в месяц","Раз в квартал","Обычно 8 раз в год","Ежедневно"], correctAnswers:2, explanation:"Заседания ~ раз в 6 недель." },
-        { id:31, topic:"Операционные процедуры Банка России", difficulty:"продвинутый", type:"multiple", questionText:"Выберите цели макропруденциальной политики:", options:["Снижение системных рисков","Сглаживание кредитных циклов","Управление инфляцией","Контроль денежной массы"], correctAnswers:[0,1], explanation:"Финансовая стабильность и сглаживание циклов." },
-        { id:32, topic:"Операционные процедуры Банка России", difficulty:"базовый", type:"open", questionText:"Операция ЦБ по предоставлению ликвидности банкам на 1 день под залог ценных бумаг?", options:[], correctAnswers:"валютный своп", explanation:"Валютный своп." },
-        { id:33, topic:"Операционные процедуры Банка России", difficulty:"сложный", type:"single", questionText:"Какой орган отвечает за макропруденциальную политику?", options:["Комитет финансовой стабильности","Минфин","ФНС","Правительство"], correctAnswers:0, explanation:"Комитет финансовой стабильности Банка России." },
-        { id:34, topic:"Операционные процедуры Банка России", difficulty:"базовый", type:"single", questionText:"Что из перечисленного является операцией рефинансирования?", options:["Депозитные аукционы","Ломбардный кредит","Покупка валюты","Продажа ОФЗ"], correctAnswers:1, explanation:"Ломбардный кредит — классическое рефинансирование." },
-        { id:35, topic:"Операционные процедуры Банка России", difficulty:"базовый", type:"open", questionText:"Мера, ограничивающая долю кредитов с высоким риском в портфеле банка?", options:[], correctAnswers:"макропруденциальный лимит", explanation:"Макропруденциальные лимиты (МПЛ)." }
+      { id:1, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"Что такое макропруденциальная политика Банка России?", options:["Политика по обеспечению ценовой стабильности","Политика по обеспечению стабильности финансовой системы","Регулирование макроэкономической деятельности кредитных и микрофинансовых организаций на региональном уровне","Политика, направленная на предотвращение банкротства отдельных крупных банков путём санации и предоставления экстренной ликвидности."], correctAnswers:1, explanation:"Макропруденциальная политика - политика по обеспечению стабильности финансовой системы." },
+      { id:2, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"multiple", questionText:"Назовите два основных инструмента макропруденциальной политики Банка России, используемых в розничном кредитовании.", options:["Макропруденциальные лимиты","Макропруденциальные надбавки к коэффициентам риска","Антициклическая надбавка","Норма обязательных резервов"], correctAnswers:[0,1], explanation:"" },
+      { id:3, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"Как рассчитывается показатель долговой нагрузки заемщика?", options:["Отношение общей суммы кредита к стоимости залога","Отношение стоимости залога к общей сумме кредита","Отношение суммы просроченной задолженности к объему кредитного портфеля","Отношение среднемесячных платежей по всем кредитам и займам к среднемесячному доходу заемщика (в процентах)"], correctAnswers:3, explanation:"" },
+      { id:4, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"Для чего Банк России устанавливает макропруденциальные лимиты?", options:["Для снижения инфляции через ограничение денежного предложения","Для ограничения закредитованности граждан и формирования более сбалансированной структуры розничного кредитования","Чтобы установить максимальную сумму, которую банк может потерять при банкротстве одного крупного заёмщика","Для ограничения общего объёма кредитов, который банки могут выдать без обеспечения в течение одного квартала"], correctAnswers:1, explanation:"" },
+      { id:5, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"multiple", questionText:"На какие сегменты кредитования Банк России может устанавливать макропруденциальные лимиты? Выберите три варианта ответа.", options:["Необеспеченные потребительские кредиты","Корпоративные кредиты","Автокредиты","Ипотека"], correctAnswers:[0,2,3], explanation:"" },
+      { id:6, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"С какой целью применяется антициклическая надбавка к капиталу банков?", options:["Для ограничения валютных рисков банков","Для компенсации потерь кредитных организаций при обесценении залога","Чтобы защитить крупнейшие системно значимые банки от внезапного оттока вкладов населения","Создание дополнительного буфера капитала, который банки могут использовать в кризисные периоды"], correctAnswers:3, explanation:"Антициклическая надбавка создаёт буфер капитала в хорошие времена." },
+      { id:7, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"С какой периодичностью Банк России пересматривает решения по макропруденциальной политике?", options:["Ежемесячно","Ежеквартально","Раз в полгода","Ежегодно"], correctAnswers:1, explanation:"" },
+      { id:8, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"Каким организациям, помимо банков, Банк России может устанавливать макропруденциальные лимиты?", options:["Страховым компаниям","Пенсионным фондам","Микрофинансовым организациям","Кредитным кооперативам"], correctAnswers:2, explanation:"" },
+      { id:9, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"Что такое \"макропруденциальный буфер капитала\"?", options:["Запас собственных средств (капитала), который банки формируют под рискованные кредиты благодаря действию макропруденциальных надбавок","Часть уставного капитала кредитной организации, зарезервированная на случай отзыва лицензии","Специальный счет кредитной или микрофинансовой организации, открытый в Банке России для покрытия операционных убытков","Это резервный фонд, который формируется за счет средств Банка России для экстренной докапитализации любого банка в случае его банкротства"], correctAnswers:0, explanation:"Буфер капитала формируется благодаря макропруденциальным надбавкам." },
+      { id:10, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"К какому типу кредитов применяются макропруденциальные лимиты?", options:["К розничным кредитам (кредиты физическим лицам)","К субординированным кредитам","К любым корпоративным кредитам","К корпоративным кредитам для малых и средних предприятий"], correctAnswers:0, explanation:"" },
+      { id:11, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"В каком документе Банк России систематизировал свои подходы к проведению макропруденциальной политики?", options:["Основные направления единой государственной денежно-кредитной политики","Обзор финансовой стабильности","Основные подходы к проведению макропруденциальной политики","Политика финансового оздоровления кредитных и микрофинансовых организаций"], correctAnswers:2, explanation:"" },
+      { id:12, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"Являются ли макропруденциальные лимиты постоянной мерой?", options:["Да, они устанавливаются один раз и не меняются","Нет, они могут пересматриваться ежеквартально в зависимости от ситуации","Нет, они вводятся только на время кризиса","Нет, они пересматриваются ежегодно по итогам года"], correctAnswers:1, explanation:"" },
+      { id:13, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"multiple", questionText:"Какие показатели, помимо показателя долговой нагрузки (ПДН), являются ключевыми для оценки риска в ипотеке?", options:["Отношение величины кредита к стоимости залога (LTV)","Кредитный рейтинг застройщика","Кредитный рейтинг заёмщика и его трудоустройство","Размер первоначального взноса, по договорам долевого участия"], correctAnswers:[0,3], explanation:"LTV или размер первоначального взноса." },
+      { id:14, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"multiple", questionText:"Выберите 2 основные цели макропруденциальной политики Банка России.", options:["Защита и обеспечение устойчивости рубля посредством поддержания ценовой стабильности","Содействие развитию конкурентоспособного финансового рынка","Ограничение масштаба уязвимостей в финансовой системе","Накопление запаса капитала и ликвидности у участников финансового рынка","Регулирование макроэкономической деятельности участников финансовой системы"], correctAnswers:[2,3], explanation:"Цели: ограничить уязвимости и накопить буферы." },
+      { id:15, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"Какой из макропруденциальных инструментов используется ТОЛЬКО для банков?", options:["Норматив краткосрочной ликвидности","Антициклические надбавки","Макропруденциальные лимиты","Макропруденциальные надбавки"], correctAnswers:1, explanation:"Антициклические надбавки только для банков." },
+      { id:16, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"Какой макропруденциальный инструмент Банк России начал применять первым?", options:["Норматив краткосрочной ликвидности","Антициклическая надбавка","Макропруденциальные лимиты","Макропруденциальные надбавки"], correctAnswers:3, explanation:"Первыми были макропруденциальные надбавки." },
+      { id:17, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"Применяются ли макропруденциальные надбавки к кредитам, выданным до их введения?", options:["Да, применяются ко всем кредитам","Нет, только к вновь выдаваемым кредитам","Да, выборочно, по решению Банка России","Да, выборочно по решению кредитной организации"], correctAnswers:1, explanation:"Надбавки применяются к вновь выдаваемым кредитам." },
+      { id:18, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"На основе чего определяется целевой уровень антициклической надбавки к капиталу банков?", options:["На основе прогноза инфляции","На основе среднего значения ключевой ставки за последние 5 лет","На основе рекомендация Минфина","На основе результатов макропруденциального стресс-тестирования"], correctAnswers:3, explanation:"" },
+      { id:19, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"open", questionText:"Как называется устойчивость финансовой системы к шокам и бесперебойное и эффективное ее функционирование? Назовите термин двумя словами", options:[], correctAnswers:"финансовая стабильность", explanation:"" },
+      { id:20, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"С какой периодичностью Банк России проводит макропруденциальное стресс-тестирование?", options:["Ежеквартально","По мере необходимости, но не реже 1 раза в полугодие","Раз в год","По мере необходимости, но не реже 1 раза в 2 года"], correctAnswers:2, explanation:"Ежегодно." },
+      { id:21, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"Когда решение Совета директоров Банка России о снижении макропруденциальных требований вступает в силу?", options:["С начала следующего календарного квартала","Через месяц после принятия решения","Совет директоров назначает дату вступления решения в силу","С момента принятия решения"], correctAnswers:3, explanation:"Снижение требований вступает в силу сразу." },
+      { id:22, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"В каком материале описывается как Банк России выявляет системные риски, принимает решения на разных стадиях финансового цикла и учитывает взаимосвязь различных инструментов. Также в этом материале показано, почему макропруденциальная политика не может служить инструментом обеспечения ценовой стабильности.", options:["Основные направления единой государственной денежно-кредитной политики","Обзор финансовой стабильности","Основные направления единой государственной макропруденциальной политики","Основные подходы к проведению макропруденциальной политики"], correctAnswers:3, explanation:"" },
+      { id:23, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"open", questionText:"Какое понятие описывает заметную волатильность на финансовых рынках или в финансовых потоках безотносительно системного эффекта? Назовите термин 2 словами", options:[], correctAnswers:"финансовая нестабильность", explanation:"" },
+      { id:24, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"С какой периодичностью начиная с 2026 года Банк России публикует график заседаний Совета директоров по макропруденциальной политике?", options:["Ежемесячно","Ежеквартально","Раз в полгода","Ежегодно"], correctAnswers:3, explanation:"График публикуется ежегодно." },
+      { id:25, topic:"Макропруденциальная политика Банка России", difficulty:"базовый", type:"single", questionText:"Для каких банков устанавливаются значения макропруденциальных лимитов, указанные в пресс-релизах Банка России?", options:["Для банков с базовой лицензией","Для банков с универсальной лицензией","Только для системно значимых банков","Для всех банков и филиалов иностранных банков, работающих на территории России"], correctAnswers:1, explanation:"" },
+      { id:26, topic:"Операционные процедуры Банка России", difficulty:"базовый", type:"single", questionText:"Что такое ключевая ставка?", options:["Ставка по депозитам физлиц","Процент, по которому ЦБ выдаёт кредиты банкам на 1 неделю","Ставка рефинансирования","Ключевой параметр инфляции"], correctAnswers:1, explanation:"Ключевая ставка — основной инструмент ДКП." },
+      { id:27, topic:"Операционные процедуры Банка России", difficulty:"базовый", type:"multiple", questionText:"Какие инструменты относятся к макропруденциальной политике? (два)", options:["Надбавки к рискам","Лимиты на долю рискованных кредитов","Ключевая ставка","Валютные интервенции"], correctAnswers:[0,1], explanation:"Надбавки и лимиты — макропруденциальные инструменты." },
+      { id:28, topic:"Операционные процедуры Банка России", difficulty:"продвинутый", type:"open", questionText:"Расшифруйте аббревиатуру ОФЗ", options:[], correctAnswers:"облигации федерального займа", explanation:"Государственные ценные бумаги." },
+      { id:29, topic:"Операционные процедуры Банка России", difficulty:"сложный", type:"single", questionText:"Что такое антициклический буфер капитала?", options:["Дополнительный капитал в период спада","Резерв на валютные риски","Норматив ликвидности","Отчисления в ФОМС"], correctAnswers:0, explanation:"Накопление капитала для защиты от спадов." },
+      { id:30, topic:"Операционные процедуры Банка России", difficulty:"базовый", type:"single", questionText:"Как часто Совет директоров пересматривает ключевую ставку?", options:["Раз в месяц","Раз в квартал","Обычно 8 раз в год","Ежедневно"], correctAnswers:2, explanation:"Заседания ~ раз в 6 недель." },
+      { id:31, topic:"Операционные процедуры Банка России", difficulty:"продвинутый", type:"multiple", questionText:"Выберите цели макропруденциальной политики:", options:["Снижение системных рисков","Сглаживание кредитных циклов","Управление инфляцией","Контроль денежной массы"], correctAnswers:[0,1], explanation:"Финансовая стабильность и сглаживание циклов." },
+      { id:32, topic:"Операционные процедуры Банка России", difficulty:"базовый", type:"open", questionText:"Операция ЦБ по предоставлению ликвидности банкам на 1 день под залог ценных бумаг?", options:[], correctAnswers:"валютный своп", explanation:"Валютный своп." },
+      { id:33, topic:"Операционные процедуры Банка России", difficulty:"сложный", type:"single", questionText:"Какой орган отвечает за макропруденциальную политику?", options:["Комитет финансовой стабильности","Минфин","ФНС","Правительство"], correctAnswers:0, explanation:"Комитет финансовой стабильности Банка России." },
+      { id:34, topic:"Операционные процедуры Банка России", difficulty:"базовый", type:"single", questionText:"Что из перечисленного является операцией рефинансирования?", options:["Депозитные аукционы","Ломбардный кредит","Покупка валюты","Продажа ОФЗ"], correctAnswers:1, explanation:"Ломбардный кредит — классическое рефинансирование." },
+      { id:35, topic:"Операционные процедуры Банка России", difficulty:"базовый", type:"open", questionText:"Мера, ограничивающая долю кредитов с высоким риском в портфеле банка?", options:[], correctAnswers:"макропруденциальный лимит", explanation:"Макропруденциальные лимиты (МПЛ)." }
     ];
 
-    // ---------------------- ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ -------------------------
+    // URL вашего Apps Script Web App
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxzkyJuobFB70OXLl_bwlk9hlSG6cIfBpTbDe0N23tNJGSI29ruUBHAFpLlki6JrriKRw/exec";
+
+    // Глобальные переменные
     let currentQuizQuestions = [];
     let userAnswersRecord = [];
     let quizStartTimestamp = null;
@@ -169,323 +382,505 @@
     let answerLock = false;
     let currentQuestionObj = null;
     let autoTransitionTimeout = null;
-    let quizResultsData = null;
+    let currentUser = null;
+    let savingInProgress = false;
 
-    // ⚠️ ВАЖНО: Укажите URL вашего веб-приложения Apps Script (тот же, что и для сохранения результатов)
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyuxHAhl5Tzu4VCbhLLHw_zbqV6-KWtYmSFMr1i3fmMSikfhjbJdVGlRa10plJCL49k8A/exec";
+    // DOM
+    let authScreen, startScreen, quizScreen, resultsScreen;
+    let authLogin, authPassword, loginBtn, registerBtn, authErrorMsg, authSuccessMsg;
+    let startErrorMsg, startBtn, submitBtn, nextBtn, restartBtn;
+    let questionCounterSpan, timerDisplay, questionTextDiv, optionsContainer, feedbackBlock;
+    let correctCountSpan, totalQuestionsStatSpan, percentageStatSpan, totalTimeSecSpan, resultUserName;
+    let resultSaveError, resultSaveSuccess;
 
-    // DOM элементы
-    const startScreen = document.getElementById('startScreen');
-    const quizScreen = document.getElementById('quizScreen');
-    const resultsScreen = document.getElementById('resultsScreen');
-    const startErrorMsg = document.getElementById('startErrorMsg');
-    const startBtn = document.getElementById('startQuizBtn');
-    const submitBtn = document.getElementById('submitAnswerBtn');
-    const nextBtn = document.getElementById('nextQuestionBtn');
-    const questionCounterSpan = document.getElementById('questionCounter');
-    const timerDisplay = document.getElementById('timerDisplay');
-    const questionTextDiv = document.getElementById('questionText');
-    const optionsContainer = document.getElementById('optionsContainer');
-    const feedbackBlock = document.getElementById('feedbackBlock');
-    const restartBtn = document.getElementById('restartQuizBtn');
-    const correctCountSpan = document.getElementById('correctCount');
-    const totalQuestionsStatSpan = document.getElementById('totalQuestionsStat');
-    const percentageStatSpan = document.getElementById('percentageStat');
-    const totalTimeSecSpan = document.getElementById('totalTimeSec');
-    const saveResultBtn = document.getElementById('saveResultBtn');
-    const usernameInput = document.getElementById('usernameInput');
-    const saveResultMsg = document.getElementById('saveResultMsg');
+    function escapeHtml(str) {
+      return String(str || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
 
-    // ---------------------- ФУНКЦИИ ОБЩЕНИЯ С APPS SCRIPT -------------------------
+    function normalizeAnswer(str) {
+      return String(str || "")
+        .trim()
+        .toLowerCase()
+        .replace(/ё/g, "е")
+        .replace(/\s+/g, " ");
+    }
+
+    function showError(el, msg) {
+      el.textContent = msg;
+      el.style.display = "block";
+    }
+
+    function showSuccess(el, msg) {
+      el.textContent = msg;
+      el.style.display = "block";
+    }
+
+    function hideMsg(el) {
+      el.style.display = "none";
+      el.textContent = "";
+    }
+
     async function callAppsScript(action, data) {
+      try {
+        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=${encodeURIComponent(action)}`, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(data || {})
+        });
+
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const raw = await response.text();
         try {
-            const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=${action}`, {
-                method: 'POST',
-                mode: 'cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            return await response.json();
-        } catch(e) {
-            console.error(e);
-            return { error: e.message, success: false };
+          return JSON.parse(raw);
+        } catch (_) {
+          return { success: true, raw };
         }
+      } catch (e) {
+        console.error("Apps Script error:", e);
+        return { success: false, error: e.message };
+      }
     }
 
-    async function checkNameExists(name) {
-        const result = await callAppsScript('checkName', { username: name });
-        return result.exists === true;
+    async function registerUser() {
+      hideMsg(authErrorMsg);
+      hideMsg(authSuccessMsg);
+
+      const username = authLogin.value.trim();
+      const password = authPassword.value.trim();
+
+      if (!username || !password) {
+        showError(authErrorMsg, "Введите логин и пароль.");
+        return;
+      }
+
+      const res = await callAppsScript("registerUser", { username, password });
+      if (res && res.success) {
+        showSuccess(authSuccessMsg, "Регистрация успешна. Теперь нажмите «Войти».");
+      } else {
+        showError(authErrorMsg, (res && res.error) ? res.error : "Ошибка регистрации.");
+      }
     }
 
-    async function addNameToUsedNames(name) {
-        await callAppsScript('addName', { username: name });
+    async function loginUser() {
+      hideMsg(authErrorMsg);
+      hideMsg(authSuccessMsg);
+
+      const username = authLogin.value.trim();
+      const password = authPassword.value.trim();
+
+      if (!username || !password) {
+        showError(authErrorMsg, "Введите логин и пароль.");
+        return;
+      }
+
+      const res = await callAppsScript("loginUser", { username, password });
+      if (res && res.success) {
+        currentUser = res.username || username;
+        authScreen.style.display = "none";
+        startScreen.style.display = "block";
+      } else {
+        showError(authErrorMsg, (res && res.error) ? res.error : "Неверный логин или пароль.");
+      }
     }
 
-    async function saveResultToSheet(resultData) {
-        return await callAppsScript('registerResult', resultData);
-    }
-
-    // ---------------------- ЛОГИКА КВИЗА (без изменений из рабочей версии) -------------------------
     function formatFeedbackMsg(isCorrect, explanation) {
-        let msg = isCorrect ? "✅ Верно!" : "❌ Неверно.";
-        if (explanation && explanation.trim()) msg += "<br> Примечание: " + explanation;
-        return msg;
+      let msg = isCorrect ? "✅ Верно!" : "❌ Неверно.";
+      if (explanation && explanation.trim()) msg += "<br>Примечание: " + escapeHtml(explanation);
+      return msg;
     }
-    function stopTimer() { if (timerInterval) clearInterval(timerInterval); timerInterval = null; }
-    function clearAuto() { if (autoTransitionTimeout) clearTimeout(autoTransitionTimeout); autoTransitionTimeout = null; }
 
-    function startTimerForQuestion() {
-        stopTimer();
-        timeLeft = 60;
-        updateTimerUI();
-        timerInterval = setInterval(() => {
-            if (answerLock) return;
-            if (timeLeft <= 1) { timeLeft = 0; updateTimerUI(); stopTimer(); if (!answerLock) handleTimeout(); }
-            else { timeLeft--; updateTimerUI(); }
-        }, 1000);
+    function stopTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+      timerInterval = null;
+    }
+
+    function clearAuto() {
+      if (autoTransitionTimeout) clearTimeout(autoTransitionTimeout);
+      autoTransitionTimeout = null;
     }
 
     function updateTimerUI() {
-        const m = Math.floor(timeLeft/60), s = timeLeft%60;
-        timerDisplay.textContent = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-        if (timeLeft <= 10) timerDisplay.classList.add('warning');
-        else timerDisplay.classList.remove('warning');
+      const m = Math.floor(timeLeft / 60);
+      const s = timeLeft % 60;
+      timerDisplay.textContent = `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+      timerDisplay.classList.toggle("warning", timeLeft <= 10);
     }
 
-    function handleTimeout() {
+    function startTimerForQuestion() {
+      stopTimer();
+      timeLeft = 60;
+      updateTimerUI();
+
+      timerInterval = setInterval(() => {
         if (answerLock) return;
-        answerLock = true;
-        stopTimer();
-        const q = currentQuestionObj;
-        let correctTxt = "";
-        if (q.type === 'single') correctTxt = q.options[q.correctAnswers];
-        else if (q.type === 'multiple') correctTxt = q.correctAnswers.map(i => q.options[i]).join(", ");
-        else correctTxt = q.correctAnswers;
-        let html = `<span>⏰ Время вышло! Правильный ответ: ${correctTxt}.`;
-        if (q.explanation) html += `<br> Примечание: ${q.explanation}`;
-        html += `</span>`;
-        feedbackBlock.innerHTML = html;
-        feedbackBlock.className = "feedback wrong";
-        feedbackBlock.style.display = "block";
-        userAnswersRecord.push({ questionId: q.id, questionText: q.questionText, userAnswer: "timeout", isCorrect: false, correctAnswer: correctTxt, explanation: q.explanation || "" });
-        submitBtn.style.display = "none";
-        nextBtn.style.display = "flex";
-        nextBtn.textContent = (currentQuestionIndex + 1 === currentQuizQuestions.length) ? "Завершить квиз" : "➡ Перейти к следующему";
-        clearAuto();
-        autoTransitionTimeout = setTimeout(() => goToNext(), 60000);
+
+        if (timeLeft <= 1) {
+          timeLeft = 0;
+          updateTimerUI();
+          stopTimer();
+          handleTimeout();
+          return;
+        }
+
+        timeLeft -= 1;
+        updateTimerUI();
+      }, 1000);
     }
 
     function recordAnswer(isCorrect, userRaw, correctDisplay) {
-        const q = currentQuestionObj;
-        userAnswersRecord.push({ questionId: q.id, questionText: q.questionText, userAnswer: userRaw, isCorrect: isCorrect, correctAnswer: correctDisplay, explanation: q.explanation || "" });
-        feedbackBlock.innerHTML = formatFeedbackMsg(isCorrect, q.explanation);
-        feedbackBlock.className = isCorrect ? "feedback correct" : "feedback wrong";
-        feedbackBlock.style.display = "block";
-        submitBtn.style.display = "none";
-        nextBtn.style.display = "flex";
-        nextBtn.textContent = (currentQuestionIndex + 1 === currentQuizQuestions.length) ? "Завершить квиз" : "➡ Перейти к следующему";
+      const q = currentQuestionObj;
+
+      userAnswersRecord.push({
+        questionId: q.id,
+        questionText: q.questionText,
+        userAnswer: userRaw,
+        isCorrect: isCorrect,
+        correctAnswer: correctDisplay,
+        explanation: q.explanation || ""
+      });
+
+      feedbackBlock.innerHTML = formatFeedbackMsg(isCorrect, q.explanation);
+      feedbackBlock.className = isCorrect ? "feedback correct" : "feedback wrong";
+      feedbackBlock.style.display = "block";
+
+      submitBtn.style.display = "none";
+      nextBtn.style.display = "block";
+      nextBtn.textContent = (currentQuestionIndex + 1 === currentQuizQuestions.length)
+        ? "Завершить квиз"
+        : "➡ Перейти к следующему";
+    }
+
+    function handleTimeout() {
+      if (answerLock) return;
+      answerLock = true;
+      stopTimer();
+
+      const q = currentQuestionObj;
+      let correctTxt = "";
+      if (q.type === "single") correctTxt = q.options[q.correctAnswers];
+      else if (q.type === "multiple") correctTxt = q.correctAnswers.map(i => q.options[i]).join(", ");
+      else correctTxt = q.correctAnswers;
+
+      let html = `⏰ Время вышло! Правильный ответ: ${escapeHtml(correctTxt)}.`;
+      if (q.explanation) html += `<br>Примечание: ${escapeHtml(q.explanation)}`;
+
+      feedbackBlock.innerHTML = html;
+      feedbackBlock.className = "feedback wrong";
+      feedbackBlock.style.display = "block";
+
+      userAnswersRecord.push({
+        questionId: q.id,
+        questionText: q.questionText,
+        userAnswer: "timeout",
+        isCorrect: false,
+        correctAnswer: correctTxt,
+        explanation: q.explanation || ""
+      });
+
+      submitBtn.style.display = "none";
+      nextBtn.style.display = "block";
+      nextBtn.textContent = (currentQuestionIndex + 1 === currentQuizQuestions.length)
+        ? "Завершить квиз"
+        : "➡ Перейти к следующему";
+
+      clearAuto();
+      autoTransitionTimeout = setTimeout(goToNext, 60000);
     }
 
     function checkAnswer() {
-        if (answerLock) return;
-        const q = currentQuestionObj;
-        let isCorrect = false, userRaw = "", correctDisplay = "";
-        if (q.type === "single") {
-            const selected = document.querySelector('input[name="singleOption"]:checked');
-            if (!selected) { alert("Выберите вариант"); return; }
-            const idx = parseInt(selected.value);
-            userRaw = q.options[idx];
-            correctDisplay = q.options[q.correctAnswers];
-            isCorrect = (idx === q.correctAnswers);
-        } else if (q.type === "multiple") {
-            const boxes = document.querySelectorAll('input[name="multiOption"]:checked');
-            const selected = Array.from(boxes).map(cb => parseInt(cb.value)).sort();
-            const correctSorted = [...q.correctAnswers].sort();
-            isCorrect = selected.length === correctSorted.length && selected.every((v,i) => v === correctSorted[i]);
-            userRaw = selected.map(i => q.options[i]).join("; ");
-            correctDisplay = q.correctAnswers.map(i => q.options[i]).join("; ");
-        } else if (q.type === "open") {
-            const input = document.getElementById('openInput');
-            if (!input) return;
-            let userVal = input.value.trim().toLowerCase();
-            let correctVal = q.correctAnswers.trim().toLowerCase();
-            isCorrect = (userVal === correctVal);
-            userRaw = input.value;
-            correctDisplay = q.correctAnswers;
+      if (answerLock) return;
+
+      const q = currentQuestionObj;
+      let isCorrect = false;
+      let userRaw = "";
+      let correctDisplay = "";
+
+      if (q.type === "single") {
+        const selected = document.querySelector('input[name="singleOption"]:checked');
+        if (!selected) {
+          alert("Выберите вариант ответа.");
+          return;
         }
-        answerLock = true;
-        stopTimer();
-        clearAuto();
-        recordAnswer(isCorrect, userRaw, correctDisplay);
+        const idx = Number(selected.value);
+        userRaw = q.options[idx];
+        correctDisplay = q.options[q.correctAnswers];
+        isCorrect = idx === q.correctAnswers;
+      } else if (q.type === "multiple") {
+        const selectedEls = Array.from(document.querySelectorAll('input[name="multiOption"]:checked'));
+        if (selectedEls.length === 0) {
+          alert("Выберите минимум один вариант.");
+          return;
+        }
+
+        const selected = selectedEls.map(el => Number(el.value)).sort((a, b) => a - b);
+        const correct = [...q.correctAnswers].sort((a, b) => a - b);
+
+        isCorrect = selected.length === correct.length && selected.every((v, i) => v === correct[i]);
+        userRaw = selected.map(i => q.options[i]).join("; ");
+        correctDisplay = q.correctAnswers.map(i => q.options[i]).join("; ");
+      } else {
+        const input = document.getElementById("openInput");
+        if (!input) return;
+
+        const userNorm = normalizeAnswer(input.value);
+        const correctNorm = normalizeAnswer(q.correctAnswers);
+
+        if (!userNorm) {
+          alert("Введите ответ.");
+          return;
+        }
+
+        isCorrect = userNorm === correctNorm;
+        userRaw = input.value.trim();
+        correctDisplay = q.correctAnswers;
+      }
+
+      answerLock = true;
+      stopTimer();
+      clearAuto();
+      recordAnswer(isCorrect, userRaw, correctDisplay);
     }
 
     function goToNext() {
-        clearAuto();
-        if (currentQuestionIndex + 1 < currentQuizQuestions.length) { currentQuestionIndex++; renderCurrentQuestion(); }
-        else { finishQuiz(); }
+      clearAuto();
+      if (currentQuestionIndex + 1 < currentQuizQuestions.length) {
+        currentQuestionIndex += 1;
+        renderCurrentQuestion();
+      } else {
+        finishQuiz();
+      }
+    }
+
+    async function saveResultAuto(finalData) {
+      if (savingInProgress) return;
+      savingInProgress = true;
+
+      hideMsg(resultSaveError);
+      hideMsg(resultSaveSuccess);
+
+      const saveRes = await callAppsScript("registerResult", finalData);
+
+      if (saveRes && saveRes.success !== false) {
+        showSuccess(resultSaveSuccess, "Результат автоматически сохранён в Google Таблицу.");
+      } else {
+        showError(resultSaveError, "Ошибка автосохранения результата. Проверьте Apps Script/интернет.");
+      }
+
+      savingInProgress = false;
     }
 
     function finishQuiz() {
-        stopTimer(); clearAuto();
-        const totalSeconds = Math.floor((Date.now() - quizStartTimestamp) / 1000);
-        const totalQ = currentQuizQuestions.length;
-        const correctTotal = userAnswersRecord.filter(a => a.isCorrect).length;
-        const percent = Math.round((correctTotal / totalQ) * 100);
-        correctCountSpan.innerText = correctTotal;
-        totalQuestionsStatSpan.innerText = totalQ;
-        percentageStatSpan.innerText = `${percent}%`;
-        totalTimeSecSpan.innerText = totalSeconds;
-        // Сохраняем данные для последующей отправки с именем
-        quizResultsData = {
-            totalSeconds: totalSeconds,
-            totalQ: totalQ,
-            correctTotal: correctTotal,
-            percent: percent,
-            theme: document.querySelector('input[name="theme"]:checked').value,
-            difficulty: document.querySelector('input[name="difficulty"]:checked').value,
-            answers: userAnswersRecord
-        };
-        quizScreen.style.display = "none";
-        resultsScreen.style.display = "block";
-        usernameInput.value = '';
-        saveResultMsg.style.display = 'none';
-        saveResultBtn.disabled = false;
-        saveResultBtn.style.opacity = "1";
+      stopTimer();
+      clearAuto();
+
+      const totalSeconds = Math.max(0, Math.floor((Date.now() - quizStartTimestamp) / 1000));
+      const totalQ = currentQuizQuestions.length;
+      const correctTotal = userAnswersRecord.filter(a => a.isCorrect).length;
+      const percent = totalQ > 0 ? Math.round((correctTotal / totalQ) * 100) : 0;
+
+      correctCountSpan.textContent = String(correctTotal);
+      totalQuestionsStatSpan.textContent = String(totalQ);
+      percentageStatSpan.textContent = `${percent}%`;
+      totalTimeSecSpan.textContent = String(totalSeconds);
+      resultUserName.textContent = currentUser || "Гость";
+
+      quizScreen.style.display = "none";
+      resultsScreen.style.display = "block";
+
+      const now = new Date();
+      const formattedDate = now.toLocaleString("ru-RU", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+      });
+
+      const finalData = {
+        date: formattedDate,
+        username: currentUser || "Гость",
+        settings: {
+          theme: document.querySelector('input[name="theme"]:checked').value,
+          difficulty: document.querySelector('input[name="difficulty"]:checked').value,
+          questionsCount: totalQ
+        },
+        totalCorrect: correctTotal,
+        totalQuestions: totalQ,
+        percent: percent,
+        totalTimeSec: totalSeconds,
+        answers: userAnswersRecord
+      };
+
+      saveResultAuto(finalData);
     }
 
     function renderCurrentQuestion() {
-        answerLock = false;
-        submitBtn.style.display = "flex";
-        nextBtn.style.display = "none";
-        feedbackBlock.style.display = "none";
-        feedbackBlock.innerHTML = "";
-        stopTimer(); clearAuto();
-        currentQuestionObj = currentQuizQuestions[currentQuestionIndex];
-        questionTextDiv.innerText = currentQuestionObj.questionText;
-        questionCounterSpan.innerText = `Вопрос ${currentQuestionIndex+1} / ${currentQuizQuestions.length}`;
-        optionsContainer.innerHTML = "";
-        if (currentQuestionObj.type === "single") {
-            currentQuestionObj.options.forEach((opt, idx) => {
-                const div = document.createElement("div");
-                div.className = "option-item";
-                div.innerHTML = `<input type="radio" name="singleOption" value="${idx}" id="opt_${idx}"> <label for="opt_${idx}">${opt}</label>`;
-                optionsContainer.appendChild(div);
-            });
-        } else if (currentQuestionObj.type === "multiple") {
-            currentQuestionObj.options.forEach((opt, idx) => {
-                const div = document.createElement("div");
-                div.className = "option-item";
-                div.innerHTML = `<input type="checkbox" name="multiOption" value="${idx}" id="ch_${idx}"> <label for="ch_${idx}">${opt}</label>`;
-                optionsContainer.appendChild(div);
-            });
-        } else if (currentQuestionObj.type === "open") {
-            const input = document.createElement("input");
-            input.type = "text";
-            input.id = "openInput";
-            input.placeholder = "Введите ответ...";
-            optionsContainer.appendChild(input);
-        }
-        startTimerForQuestion();
+      answerLock = false;
+      submitBtn.style.display = "block";
+      nextBtn.style.display = "none";
+      feedbackBlock.style.display = "none";
+      feedbackBlock.innerHTML = "";
+
+      stopTimer();
+      clearAuto();
+
+      currentQuestionObj = currentQuizQuestions[currentQuestionIndex];
+      questionTextDiv.textContent = currentQuestionObj.questionText;
+      questionCounterSpan.textContent = `Вопрос ${currentQuestionIndex + 1} / ${currentQuizQuestions.length}`;
+      optionsContainer.innerHTML = "";
+
+      if (currentQuestionObj.type === "single") {
+        currentQuestionObj.options.forEach((opt, idx) => {
+          const div = document.createElement("div");
+          div.className = "option-item";
+          div.innerHTML = `<input type="radio" name="singleOption" value="${idx}" id="opt_${idx}">
+                           <label for="opt_${idx}">${escapeHtml(opt)}</label>`;
+          optionsContainer.appendChild(div);
+        });
+      } else if (currentQuestionObj.type === "multiple") {
+        currentQuestionObj.options.forEach((opt, idx) => {
+          const div = document.createElement("div");
+          div.className = "option-item";
+          div.innerHTML = `<input type="checkbox" name="multiOption" value="${idx}" id="ch_${idx}">
+                           <label for="ch_${idx}">${escapeHtml(opt)}</label>`;
+          optionsContainer.appendChild(div);
+        });
+      } else {
+        const input = document.createElement("input");
+        input.type = "text";
+        input.id = "openInput";
+        input.placeholder = "Введите ответ...";
+        input.autocomplete = "off";
+        input.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" && !answerLock) checkAnswer();
+        });
+        optionsContainer.appendChild(input);
+        setTimeout(() => input.focus(), 0);
+      }
+
+      startTimerForQuestion();
+    }
+
+    function shuffleArray(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
     }
 
     function buildQuiz(theme, difficulty, count) {
-        let filtered = questionsBank.filter(q => (theme === "mix" ? true : q.topic === theme) && q.difficulty === difficulty);
-        if (filtered.length < count) return { success: false, msg: `Не хватает вопросов: доступно ${filtered.length}.` };
-        for (let i = filtered.length - 1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [filtered[i], filtered[j]] = [filtered[j], filtered[i]]; }
-        let selected = filtered.slice(0, count);
-        for (let i = selected.length - 1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [selected[i], selected[j]] = [selected[j], selected[i]]; }
-        return { success: true, questions: selected };
+      const filtered = questionsBank.filter(q => (theme === "mix" || q.topic === theme) && q.difficulty === difficulty);
+
+      if (filtered.length < count) {
+        return { success: false, msg: `Не хватает вопросов: доступно ${filtered.length}, запрошено ${count}.` };
+      }
+
+      const selected = shuffleArray([...filtered]).slice(0, count);
+      return { success: true, questions: shuffleArray(selected) };
     }
 
     function startQuiz() {
-        const theme = document.querySelector('input[name="theme"]:checked').value;
-        const difficulty = document.querySelector('input[name="difficulty"]:checked').value;
-        const count = parseInt(document.getElementById('questionCountSelect').value);
-        const build = buildQuiz(theme, difficulty, count);
-        if (!build.success) { startErrorMsg.innerText = build.msg; startErrorMsg.style.display = "block"; return; }
-        startErrorMsg.style.display = "none";
-        currentQuizQuestions = build.questions;
-        userAnswersRecord = [];
-        currentQuestionIndex = 0;
-        answerLock = false;
-        quizStartTimestamp = Date.now();
-        startScreen.style.display = "none";
-        quizScreen.style.display = "block";
-        resultsScreen.style.display = "none";
-        renderCurrentQuestion();
+      if (!currentUser) {
+        showError(startErrorMsg, "Сначала выполните вход.");
+        return;
+      }
+
+      const theme = document.querySelector('input[name="theme"]:checked').value;
+      const difficulty = document.querySelector('input[name="difficulty"]:checked').value;
+      const count = Number(document.getElementById("questionCountSelect").value);
+
+      const build = buildQuiz(theme, difficulty, count);
+      if (!build.success) {
+        showError(startErrorMsg, build.msg);
+        return;
+      }
+
+      hideMsg(startErrorMsg);
+
+      currentQuizQuestions = build.questions;
+      userAnswersRecord = [];
+      currentQuestionIndex = 0;
+      answerLock = false;
+      quizStartTimestamp = Date.now();
+
+      startScreen.style.display = "none";
+      quizScreen.style.display = "block";
+      resultsScreen.style.display = "none";
+
+      renderCurrentQuestion();
     }
 
     function restart() {
-        stopTimer(); clearAuto(); answerLock = false;
-        startScreen.style.display = "block";
-        quizScreen.style.display = "none";
-        resultsScreen.style.display = "none";
-        startErrorMsg.style.display = "none";
-        quizResultsData = null;
-        usernameInput.value = '';
-        saveResultMsg.style.display = 'none';
-        saveResultBtn.disabled = false;
-        saveResultBtn.style.opacity = "1";
+      stopTimer();
+      clearAuto();
+      answerLock = false;
+
+      startScreen.style.display = "block";
+      quizScreen.style.display = "none";
+      resultsScreen.style.display = "none";
+
+      hideMsg(startErrorMsg);
+      hideMsg(resultSaveError);
+      hideMsg(resultSaveSuccess);
     }
 
-    // ---------------------- ОБРАБОТЧИК СОХРАНЕНИЯ РЕЗУЛЬТАТА С ИМЕНЕМ -------------------------
-    async function saveResultWithName() {
-        const userName = usernameInput.value.trim();
-        const isFirstTime = document.querySelector('input[name="firstTime"]:checked').value === 'yes';
-        const finalUserName = userName === "" ? "Аноним" : userName;
-        
-        // Если пользователь указал, что это его первое прохождение – проверяем уникальность имени
-        if (isFirstTime && finalUserName !== "Аноним") {
-            const exists = await checkNameExists(finalUserName);
-            if (exists) {
-                saveResultMsg.textContent = `Имя "${finalUserName}" уже занято. Пожалуйста, выберите другое имя.`;
-                saveResultMsg.style.display = 'block';
-                return;
-            }
-        }
-        
-        const now = new Date();
-        const formattedDate = now.toLocaleString("ru-RU", { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        const finalData = {
-            date: formattedDate,
-            settings: {
-                theme: quizResultsData.theme,
-                difficulty: quizResultsData.difficulty,
-                questionsCount: quizResultsData.totalQ
-            },
-            totalCorrect: quizResultsData.correctTotal,
-            totalQuestions: quizResultsData.totalQ,
-            percent: quizResultsData.percent,
-            totalTimeSec: quizResultsData.totalSeconds,
-            answers: quizResultsData.answers,
-            username: finalUserName
-        };
-        
-        const saveResult = await saveResultToSheet(finalData);
-        if (saveResult && saveResult.success !== false) {
-            // Если первое прохождение и имя не "Аноним", сохраняем имя в список использованных
-            if (isFirstTime && finalUserName !== "Аноним") {
-                await addNameToUsedNames(finalUserName);
-            }
-            saveResultMsg.textContent = "Результат успешно сохранён!";
-            saveResultMsg.style.backgroundColor = "#e0f7e8";
-            saveResultMsg.style.color = "#0b5e2e";
-            saveResultMsg.style.display = 'block';
-            saveResultBtn.disabled = true;
-            saveResultBtn.style.opacity = "0.6";
-        } else {
-            saveResultMsg.textContent = "Ошибка при сохранении. Попробуйте позже.";
-            saveResultMsg.style.display = 'block';
-        }
+    function init() {
+      authScreen = document.getElementById("authScreen");
+      startScreen = document.getElementById("startScreen");
+      quizScreen = document.getElementById("quizScreen");
+      resultsScreen = document.getElementById("resultsScreen");
+
+      authLogin = document.getElementById("authLogin");
+      authPassword = document.getElementById("authPassword");
+      loginBtn = document.getElementById("loginBtn");
+      registerBtn = document.getElementById("registerBtn");
+      authErrorMsg = document.getElementById("authErrorMsg");
+      authSuccessMsg = document.getElementById("authSuccessMsg");
+
+      startErrorMsg = document.getElementById("startErrorMsg");
+      startBtn = document.getElementById("startQuizBtn");
+      submitBtn = document.getElementById("submitAnswerBtn");
+      nextBtn = document.getElementById("nextQuestionBtn");
+      restartBtn = document.getElementById("restartQuizBtn");
+
+      questionCounterSpan = document.getElementById("questionCounter");
+      timerDisplay = document.getElementById("timerDisplay");
+      questionTextDiv = document.getElementById("questionText");
+      optionsContainer = document.getElementById("optionsContainer");
+      feedbackBlock = document.getElementById("feedbackBlock");
+
+      correctCountSpan = document.getElementById("correctCount");
+      totalQuestionsStatSpan = document.getElementById("totalQuestionsStat");
+      percentageStatSpan = document.getElementById("percentageStat");
+      totalTimeSecSpan = document.getElementById("totalTimeSec");
+      resultUserName = document.getElementById("resultUserName");
+      resultSaveError = document.getElementById("resultSaveError");
+      resultSaveSuccess = document.getElementById("resultSaveSuccess");
+
+      loginBtn.addEventListener("click", loginUser);
+      registerBtn.addEventListener("click", registerUser);
+
+      authPassword.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") loginUser();
+      });
+
+      startBtn.addEventListener("click", startQuiz);
+      submitBtn.addEventListener("click", checkAnswer);
+      nextBtn.addEventListener("click", () => {
+        if (answerLock) goToNext();
+      });
+      restartBtn.addEventListener("click", restart);
     }
 
-    // ---------------------- ПРИВЯЗКА СОБЫТИЙ -------------------------
-    startBtn.addEventListener('click', startQuiz);
-    submitBtn.addEventListener('click', checkAnswer);
-    nextBtn.addEventListener('click', () => { if (answerLock) goToNext(); });
-    restartBtn.addEventListener('click', restart);
-    saveResultBtn.addEventListener('click', saveResultWithName);
-</script>
+    document.addEventListener("DOMContentLoaded", init);
+  </script>
 </body>
 </html>
