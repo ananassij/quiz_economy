@@ -226,7 +226,6 @@
     </div>
 
     <div class="content">
-      <!-- AUTH -->
       <div id="authScreen">
         <h3>Вход в систему</h3>
         <p class="muted">Перед началом квиза зарегистрируйтесь или войдите.</p>
@@ -243,7 +242,6 @@
         </div>
       </div>
 
-      <!-- START -->
       <div id="startScreen" style="display:none;">
         <div class="settings-group">
           <div class="settings-label">Тема</div>
@@ -279,7 +277,6 @@
         <div id="startErrorMsg" class="error-message"></div>
       </div>
 
-      <!-- QUIZ -->
       <div id="quizScreen" style="display:none;">
         <div class="quiz-header">
           <span class="question-counter" id="questionCounter">Вопрос 1 / 10</span>
@@ -292,7 +289,6 @@
         <button class="btn btn-secondary" id="nextQuestionBtn" style="display:none;">➡ Перейти к следующему</button>
       </div>
 
-      <!-- RESULTS -->
       <div id="resultsScreen" style="display:none;">
         <h3>Результаты квиза</h3>
         <div class="result-stats">
@@ -308,7 +304,6 @@
         <button class="btn btn-secondary" id="historyBtn" style="margin-top:10px;">История результатов</button>
       </div>
 
-      <!-- HISTORY -->
       <div id="historyScreen" style="display:none;">
         <h3>История результатов</h3>
         <div id="historyList" style="margin-top:14px;"></div>
@@ -356,7 +351,6 @@
       { id:35, topic:"Операционные процедуры Банка России", difficulty:"базовый", type:"open", questionText:"Мера, ограничивающая долю кредитов с высоким риском в портфеле банка?", options:[], correctAnswers:"макропруденциальный лимит", explanation:"Макропруденциальные лимиты (МПЛ)." }
     ];
 
-    // ВСТАВЬТЕ СЮДА ВАШ URL WEB APP
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbztAItRasMNLPlHsIRKdh9e8ojylnh3-Zhke5mWri61opSKF7IXMqiY0JhWmJYIk_yI1A/exec";
 
     let currentQuizQuestions = [];
@@ -408,20 +402,9 @@
       });
     }
 
-    function showError(el, msg) {
-      el.textContent = msg;
-      el.style.display = "block";
-    }
-
-    function showSuccess(el, msg) {
-      el.textContent = msg;
-      el.style.display = "block";
-    }
-
-    function hideMsg(el) {
-      el.style.display = "none";
-      el.textContent = "";
-    }
+    function showError(el, msg) { el.textContent = msg; el.style.display = "block"; }
+    function showSuccess(el, msg) { el.textContent = msg; el.style.display = "block"; }
+    function hideMsg(el) { el.style.display = "none"; el.textContent = ""; }
 
     async function callAppsScript(action, data) {
       try {
@@ -430,15 +413,9 @@
           headers: { "Content-Type": "text/plain;charset=utf-8" },
           body: JSON.stringify(data || {})
         });
-
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
         const raw = await response.text();
-        try {
-          return JSON.parse(raw);
-        } catch (_) {
-          return { success: true, raw };
-        }
+        try { return JSON.parse(raw); } catch (_) { return { success: true, raw }; }
       } catch (e) {
         console.error("Apps Script error:", e);
         return { success: false, error: e.message };
@@ -452,17 +429,11 @@
       const username = authLogin.value.trim();
       const password = authPassword.value.trim();
 
-      if (!username || !password) {
-        showError(authErrorMsg, "Введите логин и пароль.");
-        return;
-      }
+      if (!username || !password) return showError(authErrorMsg, "Введите логин и пароль.");
 
       const res = await callAppsScript("registerUser", { username, password });
-      if (res && res.success) {
-        showSuccess(authSuccessMsg, "Регистрация успешна. Теперь нажмите «Войти».");
-      } else {
-        showError(authErrorMsg, (res && res.error) ? res.error : "Ошибка регистрации.");
-      }
+      if (res && res.success) showSuccess(authSuccessMsg, "Регистрация успешна. Теперь нажмите «Войти».");
+      else showError(authErrorMsg, (res && res.error) ? res.error : "Ошибка регистрации.");
     }
 
     async function loginUser() {
@@ -472,10 +443,7 @@
       const username = authLogin.value.trim();
       const password = authPassword.value.trim();
 
-      if (!username || !password) {
-        showError(authErrorMsg, "Введите логин и пароль.");
-        return;
-      }
+      if (!username || !password) return showError(authErrorMsg, "Введите логин и пароль.");
 
       const res = await callAppsScript("loginUser", { username, password });
       if (res && res.success) {
@@ -493,15 +461,8 @@
       return msg;
     }
 
-    function stopTimer() {
-      if (timerInterval) clearInterval(timerInterval);
-      timerInterval = null;
-    }
-
-    function clearAuto() {
-      if (autoTransitionTimeout) clearTimeout(autoTransitionTimeout);
-      autoTransitionTimeout = null;
-    }
+    function stopTimer() { if (timerInterval) clearInterval(timerInterval); timerInterval = null; }
+    function clearAuto() { if (autoTransitionTimeout) clearTimeout(autoTransitionTimeout); autoTransitionTimeout = null; }
 
     function updateTimerUI() {
       const m = Math.floor(timeLeft / 60);
@@ -514,10 +475,8 @@
       stopTimer();
       timeLeft = 60;
       updateTimerUI();
-
       timerInterval = setInterval(() => {
         if (answerLock) return;
-
         if (timeLeft <= 1) {
           timeLeft = 0;
           updateTimerUI();
@@ -525,7 +484,6 @@
           handleTimeout();
           return;
         }
-
         timeLeft -= 1;
         updateTimerUI();
       }, 1000);
@@ -548,9 +506,7 @@
 
       submitBtn.style.display = "none";
       nextBtn.style.display = "block";
-      nextBtn.textContent = (currentQuestionIndex + 1 === currentQuizQuestions.length)
-        ? "Завершить квиз"
-        : "➡ Перейти к следующему";
+      nextBtn.textContent = (currentQuestionIndex + 1 === currentQuizQuestions.length) ? "Завершить квиз" : "➡ Перейти к следующему";
     }
 
     function handleTimeout() {
@@ -582,9 +538,7 @@
 
       submitBtn.style.display = "none";
       nextBtn.style.display = "block";
-      nextBtn.textContent = (currentQuestionIndex + 1 === currentQuizQuestions.length)
-        ? "Завершить квиз"
-        : "➡ Перейти к следующему";
+      nextBtn.textContent = (currentQuestionIndex + 1 === currentQuizQuestions.length) ? "Завершить квиз" : "➡ Перейти к следующему";
 
       clearAuto();
       autoTransitionTimeout = setTimeout(goToNext, 60000);
@@ -650,6 +604,44 @@
       savingInProgress = false;
     }
 
+    function shuffleArray(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function shuffleQuestionOptions(question) {
+      const q = JSON.parse(JSON.stringify(question));
+
+      if (q.type === "open" || !Array.isArray(q.options) || q.options.length <= 1) return q;
+
+      const indexed = q.options.map((opt, idx) => ({ opt, oldIdx: idx }));
+      shuffleArray(indexed);
+      q.options = indexed.map(item => item.opt);
+
+      if (q.type === "single") {
+        q.correctAnswers = indexed.findIndex(item => item.oldIdx === q.correctAnswers);
+      } else if (q.type === "multiple") {
+        q.correctAnswers = q.correctAnswers
+          .map(oldIdx => indexed.findIndex(item => item.oldIdx === oldIdx))
+          .sort((a, b) => a - b);
+      }
+
+      return q;
+    }
+
+    function buildQuiz(theme, difficulty, count) {
+      const filtered = questionsBank.filter(q => (theme === "mix" || q.topic === theme) && q.difficulty === difficulty);
+      if (filtered.length < count) {
+        return { success: false, msg: `Не хватает вопросов: доступно ${filtered.length}, запрошено ${count}.` };
+      }
+      const selected = shuffleArray([...filtered]).slice(0, count);
+      const withShuffledOptions = selected.map(shuffleQuestionOptions);
+      return { success: true, questions: shuffleArray(withShuffledOptions) };
+    }
+
     function finishQuiz() {
       stopTimer();
       clearAuto();
@@ -669,11 +661,8 @@
       resultsScreen.style.display = "block";
       historyScreen.style.display = "none";
 
-      const now = new Date();
-      const formattedDate = now.toISOString();
-
       const finalData = {
-        date: formattedDate,
+        date: new Date().toISOString(),
         username: currentUser || "Гость",
         settings: {
           theme: document.querySelector('input[name="theme"]:checked').value,
@@ -725,31 +714,12 @@
         input.id = "openInput";
         input.placeholder = "Введите ответ...";
         input.autocomplete = "off";
-        input.addEventListener("keydown", (e) => {
-          if (e.key === "Enter" && !answerLock) checkAnswer();
-        });
+        input.addEventListener("keydown", (e) => { if (e.key === "Enter" && !answerLock) checkAnswer(); });
         optionsContainer.appendChild(input);
         setTimeout(() => input.focus(), 0);
       }
 
       startTimerForQuestion();
-    }
-
-    function shuffleArray(arr) {
-      for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      return arr;
-    }
-
-    function buildQuiz(theme, difficulty, count) {
-      const filtered = questionsBank.filter(q => (theme === "mix" || q.topic === theme) && q.difficulty === difficulty);
-      if (filtered.length < count) {
-        return { success: false, msg: `Не хватает вопросов: доступно ${filtered.length}, запрошено ${count}.` };
-      }
-      const selected = shuffleArray([...filtered]).slice(0, count);
-      return { success: true, questions: shuffleArray(selected) };
     }
 
     function startQuiz() {
@@ -814,7 +784,6 @@
       const res = await callAppsScript("getUserHistory", { username: currentUser });
       if (res && res.success) {
         renderHistory(res.history || []);
-
         authScreen.style.display = "none";
         startScreen.style.display = "none";
         quizScreen.style.display = "none";
@@ -884,11 +853,8 @@
 
       backToResultsBtn.addEventListener("click", () => {
         historyScreen.style.display = "none";
-        if (historyFrom === "start") {
-          startScreen.style.display = "block";
-        } else {
-          resultsScreen.style.display = "block";
-        }
+        if (historyFrom === "start") startScreen.style.display = "block";
+        else resultsScreen.style.display = "block";
       });
     }
 
