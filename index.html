@@ -235,14 +235,35 @@
 #quizScreen #openInput {
   caret-color: auto;
 }
+
+    .back-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 40px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+    
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
+  <div class="header">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div>
       <h1>Банк России</h1>
       <p>Экономический дуолинго</p>
     </div>
+    <button id="backToSettingsBtn" class="back-btn" style="display: none;">← Назад</button>
+  </div>
+</div>
 
     <div class="content">
       <div id="authScreen">
@@ -3238,6 +3259,7 @@
       historyScreen.style.display = "none";
 
       renderCurrentQuestion();
+      backToSettingsBtn.style.display = 'block';
     }
 
     function restart() {
@@ -3252,6 +3274,7 @@
 
       hideMsg(startErrorMsg);
       hideMsg(resultSaveError);
+      backToSettingsBtn.style.display = 'none';
     }
 
     function renderHistory(items) {
@@ -3285,6 +3308,7 @@
       } else {
         alert((res && res.error) ? res.error : "Не удалось загрузить историю.");
       }
+      backToSettingsBtn.style.display = 'none';
     }
 
     function init() {
@@ -3350,7 +3374,50 @@
         else resultsScreen.style.display = "block";
       });
     }
+// Получаем ссылку на кнопку
+const backToSettingsBtn = document.getElementById('backToSettingsBtn');
 
+// Функция возврата к главному экрану (стартовым настройкам)
+function backToStartScreen() {
+  // Останавливаем таймер и автопереход
+  if (typeof stopTimer === 'function') stopTimer();
+  if (typeof clearAuto === 'function') clearAuto();
+  answerLock = false;
+
+  // Скрываем экран квиза и показываем стартовый
+  quizScreen.style.display = 'none';
+  startScreen.style.display = 'block';
+  
+  // Очищаем текущие данные квиза (по желанию)
+  currentQuizQuestions = [];
+  userAnswersRecord = [];
+  currentQuestionIndex = 0;
+
+  // Скрываем кнопку «Назад» (она должна быть видна только на экране квиза)
+  backToSettingsBtn.style.display = 'none';
+}
+
+// При старте квиза показываем кнопку «Назад»
+const originalStartQuiz = startQuiz; // сохраним оригинальную функцию, если нужно
+startQuiz = function() {
+  // Вызываем оригинальную логику
+  originalStartQuiz();
+  // Показываем кнопку в шапке
+  backToSettingsBtn.style.display = 'block';
+};
+
+// При перезапуске / возврате на главную скрываем кнопку
+const originalRestart = restart;
+restart = function() {
+  originalRestart();
+  backToSettingsBtn.style.display = 'none';
+};
+
+// Также скрываем кнопку при открытии истории или других экранах
+// (добавьте аналогично в функции openHistory, при закрытии истории и т.д.)
+
+// Вешаем обработчик клика
+backToSettingsBtn.addEventListener('click', backToStartScreen);
     document.addEventListener("DOMContentLoaded", init);
   </script>
 </body>
