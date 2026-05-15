@@ -3175,7 +3175,8 @@
       quizScreen.style.display = "none";
       resultsScreen.style.display = "block";
       historyScreen.style.display = "none";
-
+      backToSettingsBtn.style.display = 'none';
+      
       const finalData = {
         date: new Date().toISOString(),
         username: currentUser || "Гость",
