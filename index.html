@@ -3150,7 +3150,7 @@
     function buildQuiz(theme, difficulty, count) {
       const filtered = questionsBank.filter(q => (theme === "mix" || q.topic === theme) && q.difficulty === difficulty);
       if (filtered.length < count) {
-        return { success: false, msg: `Не хватает вопросов: доступно ${filtered.length}, запрошено ${count}.` };
+        return { success: false, msg: `Не хватает вопросов: доступно ${filtered.length}.` };
       }
       const selected = shuffleArray([...filtered]).slice(0, count);
       const withShuffledOptions = selected.map(shuffleQuestionOptions);
